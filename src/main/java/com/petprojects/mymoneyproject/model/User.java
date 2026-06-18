@@ -1,9 +1,6 @@
 package com.petprojects.mymoneyproject.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Setter
@@ -34,7 +31,9 @@ public class User extends GenericModel{
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "role_id", nullable = false)
-    private int roleId;
+    @ManyToOne
+    @JoinColumn(name = "role_id", nullable = false,
+                foreignKey = @ForeignKey(name = "FK_USERS_ROLE"))
+    private Role role;
 
 }

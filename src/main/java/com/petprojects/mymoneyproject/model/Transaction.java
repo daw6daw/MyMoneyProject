@@ -13,25 +13,32 @@ import lombok.*;
 @SequenceGenerator(name = "default_generator", sequenceName = "transaction_seq", allocationSize = 1)
 public class Transaction extends GenericModel{
 
-    @Column(name = "user_id", nullable = false)
-    private long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "FK_TRANSACTIONS_USER"))
+    private User user;
 
     @Column(name = "type", nullable = false)
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private TransactionsType type;
 
     @Column(name = "amount", nullable = false)
     private long amount;
 
-    @Column(name = "desctiption")
+    @Column(name = "description")
     private String description;
 
-    @Column(name = "category_id", nullable = false)
-    private long categoryId;
 
-    @Column(name = "from_wallet_id", nullable = false)
-    private long fromWalletId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false, foreignKey = @ForeignKey(name = "FK_TRANSACTIONS_CATEGORY"))
+    private Category category;
 
-    @Column(name = "to_wallet_id")
-    private long toWalletId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "from_wallet_id", nullable = false, foreignKey = @ForeignKey(name = "FK_TRANSACTIONS_FROM_WALLET"))
+    private Wallet fromWallet;
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "to_wallet_id", nullable = false, foreignKey = @ForeignKey(name = "FK_TRANSACTIONS_TO_WALLET"))
+    private Wallet toWallet;
 }

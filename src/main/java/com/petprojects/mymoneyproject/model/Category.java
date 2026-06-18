@@ -13,13 +13,14 @@ import lombok.*;
 @SequenceGenerator(name = "default_generator", sequenceName = "category_seq", allocationSize = 1)
 public class Category extends GenericModel{
 
-    @Column(name = "user_id", nullable = false)
-    private long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "FK_CATEGORIES_USER"))
+    private User user;
 
     @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "type", nullable = false)
-    @Enumerated
+    @Enumerated(EnumType.STRING) //AI опять сказал, что так будет лучше
     private CategoriesTypes type;
 }
