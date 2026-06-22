@@ -1,7 +1,6 @@
 package com.petprojects.mymoneyproject.controller;
 
 import com.petprojects.mymoneyproject.model.User;
-import com.petprojects.mymoneyproject.repository.GenericRepository;
 import com.petprojects.mymoneyproject.repository.UserRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.RequestMapping;
