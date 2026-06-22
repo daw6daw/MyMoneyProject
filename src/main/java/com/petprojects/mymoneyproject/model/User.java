@@ -31,7 +31,7 @@ public class User extends GenericModel{
     @Column(name = "password", nullable = false)
     private String password;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "role_id", nullable = false,
                 foreignKey = @ForeignKey(name = "FK_USERS_ROLE"))
     private Role role;
