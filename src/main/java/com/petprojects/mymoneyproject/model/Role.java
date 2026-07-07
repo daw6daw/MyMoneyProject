@@ -13,11 +13,7 @@ import lombok.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "roles")
-public class Role {
-
-    @Id
-    @Column(name = "id", nullable = false)
-    private Long id;
+public class Role extends GenericModel{
 
     @Column(name = "name", nullable = false)
     private String roleName;

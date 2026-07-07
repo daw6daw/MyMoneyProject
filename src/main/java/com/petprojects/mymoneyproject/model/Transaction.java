@@ -22,7 +22,7 @@ public class Transaction extends GenericModel{
     private TransactionsType type;
 
     @Column(name = "amount", nullable = false)
-    private long amount;
+    private Long amount;
 
     @Column(name = "description")
     private String description;

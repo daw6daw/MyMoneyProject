@@ -21,5 +21,5 @@ public class Wallet extends GenericModel{
     private String name;
 
     @Column(name = "balance", nullable = false)
-    private long balance;
+    private Long balance;
 }

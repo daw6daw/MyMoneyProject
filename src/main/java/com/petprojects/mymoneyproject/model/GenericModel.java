@@ -20,9 +20,4 @@ public class GenericModel {
 
     @Column(name = "created_when", nullable = false)
     private LocalDateTime createdWhen;
-
-//    @Column(name = "created_when", nullable = false, updatable = false)
-//    private LocalDateTime createdWhen = LocalDateTime.now();
-
-
 }
