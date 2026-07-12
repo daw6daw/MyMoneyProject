@@ -12,7 +12,7 @@ import lombok.Setter;
 public class UserDTO extends GenericDTO{
 
     private String firstName;
-    private String secondName;
+    private String lastName;
     private String middleName;
     private String email;
     private String login;

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Все пользователи</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1>Все пользователи</h1>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Фамилия</th>
+            <th scope="col">Имя</th>
+            <th scope="col">Отчество</th>
+            <th scope="col">Электронная почта</th>
+            <th scope="col">Логин</th>
+            <th scope="col">Номер</th>
+            <th scope="col">Роль</th>
+            <th scope="col">Дата регистрации</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.getLastName()}"></td>
+            <td th:text="${user.getFirstName()}"></td>
+            <td th:text="${user.getMiddleName()}"></td>
+            <td th:text="${user.getEmail()}"></td>
+            <td>
+                <a class="user-link" th:href="'/user/' + ${user.getId()}"
+                th:text="${user.getLogin()}">Логин</a>
+            </td>
+            <td th:text="${user.getNumber()}"></td>
+            <td th:text="${user.getRole().getRoleName()}"></td>
+            <td th:text="${#temporals.format(user.createdWhen, 'dd.MM.yyyy HH:mm')}"></td>
+        </tr>
+        </tbody>
+
+    </table>
+</div>
+</body>
+</html>
