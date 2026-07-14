@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -18,6 +19,7 @@ public class GenericModel {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "default_generator")
     private Long id;
 
-    @Column(name = "created_when", nullable = false)
+    @Column(name = "created_when", nullable = false, updatable = false)
+    @CreationTimestamp
     private LocalDateTime createdWhen;
 }

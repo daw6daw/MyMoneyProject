@@ -5,6 +5,8 @@ import com.petprojects.mymoneyproject.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -24,5 +26,18 @@ public class UserMVCController {
         List<UserDTO> userDTOList = userService.getAll();
         model.addAttribute("users", userDTOList);
         return "user/allUsers";
+    }
+
+    //переадресует на страницу регистрации
+    @GetMapping("/registration")
+    public String create() {
+        return "registration/registration";
+    }
+
+    //примет данные, создаст запись в бд и перенаправит на главную страницу
+    @PostMapping("/registration")
+    public String create(@ModelAttribute("userForm") UserDTO userDTO) {
+        userService.create(userDTO);
+        return "redirect:/";
     }
 }
