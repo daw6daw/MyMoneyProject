@@ -9,9 +9,11 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "users")
+@Table(name = "users",
+        uniqueConstraints = {@UniqueConstraint(name = "uniqueEmail", columnNames = "email"),
+                             @UniqueConstraint(name = "uniqueLogin", columnNames = "login")})
 @SequenceGenerator(name = "default_generator", sequenceName = "user_seq", allocationSize = 1)
-public class User extends GenericModel{
+public class User extends GenericModel {
 
     @Column(name = "first_name", nullable = false)
     private String firstName;
@@ -36,7 +38,7 @@ public class User extends GenericModel{
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "role_id", nullable = false,
-                foreignKey = @ForeignKey(name = "FK_USERS_ROLE"))
+            foreignKey = @ForeignKey(name = "FK_USERS_ROLE"))
     private Role role;
 
 }

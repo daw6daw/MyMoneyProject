@@ -19,30 +19,42 @@
       <!-- Все классы col-md-4 изменены на col-12 для вертикального отображения -->
       <div class="col-12">
         <label for="lastName" class="form-label">Фамилия</label>
-        <input name="lastName" type="text" class="form-control" id="lastName" placeholder="Петров" required>
+        <input th:field="*{lastName}" type="text" class="form-control" id="lastName" placeholder="Петров" required>
       </div>
 
       <div class="col-12">
         <label for="firstName" class="form-label">Имя</label>
-        <input name="firstName" type="text" class="form-control" id="firstName" placeholder="Александр" required>
+        <input th:field="*{firstName}" type="text" class="form-control" id="firstName" placeholder="Александр" required>
       </div>
 
       <div class="col-12">
         <label for="middleName" class="form-label">Отчество</label>
-        <input name="middleName" type="text" class="form-control" id="middleName" placeholder="Олегович">
+        <input th:field="*{middleName}" type="text" class="form-control" id="middleName" placeholder="Олегович">
       </div>
 
       <div class="col-12">
         <label for="login" class="form-label">Логин</label>
         <div class="input-group">
           <span class="input-group-text" id="inputGroupPrepend2">@</span>
-          <input name="login" type="text" class="form-control" id="login" aria-describedby="inputGroupPrepend2" placeholder="petrovalex83" required>
+          <input th:field="*{login}" type="text" class="form-control" id="login" aria-describedby="inputGroupPrepend2" placeholder="petrovalex83" required>
+        </div>
+      </div>
+
+      <div class="col-12" th:if="${#fields.hasErrors('login')}">
+        <div class="alert alert-danger py-2 px-3 mb-0 text-center style-error">
+          <p class="mb-0" th:errors="*{login}"></p>
         </div>
       </div>
 
       <div class="col-12">
         <label for="email" class="form-label">Электронная почта</label>
-        <input name="email" type="email" class="form-control" id="email" placeholder="petrovalex@mail.ru" required>
+        <input th:field="*{email}" type="email" class="form-control" id="email" placeholder="petrovalex@mail.ru" required>
+      </div>
+
+      <div class="col-12" th:if="${#fields.hasErrors('email')}">
+        <div class="alert alert-danger py-2 px-3 mb-0 text-center style-error">
+          <p class="mb-0" th:errors="*{email}"></p>
+        </div>
       </div>
 
       <div class="col-12">
@@ -58,7 +70,7 @@
       <div class="col-12">
         <label for="number" class="form-label">Телефон</label>
         <!-- Изменено на type="tel" для корректного ввода телефонных номеров -->
-        <input name="number" type="tel" class="form-control" id="number" placeholder="+7 980 999 99 99" minlength="12"
+        <input th:field="*{number}" type="tel" class="form-control" id="number" placeholder="+7 980 999 99 99" minlength="12"
                maxlength="12"
                pattern="\+7[0-9]{10}"
                title="Номер должен начинаться с +7 и содержать 11 цифр (например, +79879879898)" required>

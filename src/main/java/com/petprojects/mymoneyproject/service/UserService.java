@@ -1,10 +1,13 @@
 package com.petprojects.mymoneyproject.service;
 
 import com.petprojects.mymoneyproject.DTO.UserDTO;
+import com.petprojects.mymoneyproject.config.BCryptPasswordConfig;
 import com.petprojects.mymoneyproject.mapper.UserMapper;
+import com.petprojects.mymoneyproject.model.Role;
 import com.petprojects.mymoneyproject.model.User;
 import com.petprojects.mymoneyproject.repository.RoleRepository;
 import com.petprojects.mymoneyproject.repository.UserRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -12,27 +15,30 @@ import java.time.LocalDateTime;
 @Service
 public class UserService extends GenericService <User, UserDTO> {
 
-    protected UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    protected RoleRepository roleRepository;
-
-    protected UserMapper userMapper;
-
-    public UserService (UserRepository userRepository, UserMapper userMapper, RoleRepository roleRepository) {
+    public UserService (UserRepository userRepository, UserMapper userMapper, BCryptPasswordEncoder bCryptPasswordEncoder) {
         super(userRepository, userMapper);
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.userMapper = userMapper;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Override
-    public UserDTO create(UserDTO dto) {
-        User user = userMapper.toEntity(dto);
-
+    public UserDTO create(UserDTO object) {
+        User user = mapper.toEntity(object);
+        Role role = new Role();
+        role.setId(2L);
         //user.setCreatedWhen(LocalDateTime.now());
 
-        user.setRole(roleRepository.getById(2L));
+        user.setRole(role);
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        return mapper.toDTO(repository.save(user));
+    }
 
-        return userMapper.toDTO(userRepository.save(user));
+    public UserDTO getUserByLogin(final String login) {
+        return mapper.toDTO(((UserRepository) repository).findUserByLogin(login));
+    }
+
+    public UserDTO getUserByEmail(final String email) {
+        return mapper.toDTO(((UserRepository) repository).findUserByEmail(email));
     }
 }

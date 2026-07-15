@@ -11,9 +11,9 @@ import java.util.List;
 
 public abstract class GenericService <T extends GenericModel, N extends GenericDTO> {
 
-    private final GenericRepository<T> repository;
+    protected final GenericRepository<T> repository;
 
-    private final GenericMapper<T, N> mapper;
+    protected final GenericMapper<T, N> mapper;
 
     public GenericService(GenericRepository<T> repository, GenericMapper<T, N> mapper) {
         this.repository = repository;

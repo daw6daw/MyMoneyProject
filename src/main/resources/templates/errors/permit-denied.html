@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Отказ в доступе</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container py-4" >
+    <h1>Нет доступа</h1>
+    </div>
+    <div class="col-2 mt-4">
+        <a class="btn btn-primary w-100" href="/user/login" type="button">Войти</a>
+    </div>
+    <div class="col-2 mt-4">
+        <a class="btn btn-primary w-100" onclick="history.back()" type="button">Назад</a>
+    </div>
+</div>
+</body>
+</html>
