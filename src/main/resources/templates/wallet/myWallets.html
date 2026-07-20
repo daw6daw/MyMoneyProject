@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Мои кошельки</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container py-4">
+        <h1>Мои кошельки</h1>
+
+    </div>
+
+    <!-- Форма добавления кошелька -->
+    <div class="mb-4 p-3 ">
+        <form th:action="@{/wallet/myWallets/add}" th:object="${walletForm}" method="post" class="row g-3 align-items-end">
+
+            <!-- Поле "Название" -->
+            <div class="col-md-5">
+                <label for="nameWallet" class="form-label fw-bold small ">Название кошелька</label>
+                <input type="text" class="form-control" id="nameWallet" name="name"
+                       placeholder="Например: Карта Мир, Заначка" required>
+            </div>
+
+            <!-- Поле "Баланс" -->
+            <!--      <div class="col-md-4">-->
+            <!--        <label for="walletBalance" class="form-label fw-bold small text-muted">Начальный баланс</label>-->
+            <!--        <input type="number" step="0.01" class="form-control" id="walletBalance" name="balance"-->
+            <!--               placeholder="0.00" min="0"-->
+            <!--               pattern="[0-9].[0-9]"required>-->
+            <!--      </div>-->
+
+            <div class="col-md-4">
+                <label for="walletBalance" class="form-label fw-bold small ">Начальный баланс</label>
+                <!-- Используем тип text и паттерн для валидации чисел с точкой или запятой -->
+                <input type="text"
+                       class="form-control"
+                       id="walletBalance"
+                       name="stringBalance"
+                       pattern="^[0-9]+([.,][0-9]{1,2})?$"
+                       placeholder="0.00"
+                       title="0.00"
+                       required>
+            </div>
+
+
+            <!-- Кнопка "Добавить" -->
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100">
+                    Добавить
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+    <table class="table">
+        <thead class="text-center align-middle">
+        <tr>
+            <th style="width: 130px;" scope="col">Дата создания</th>
+            <th style="width: 130px;" scope="col">Название</th>
+            <th style="width: 130px;" scope="col">Баланс</th>
+            <th style="width: 130px;" scope="col"></th>
+            <th style="width: 130px;" scope="col"></th>
+        </tr>
+        </thead>
+        <tbody  class="text-center align-middle">
+        <tr  th:each="wallet : ${wallets}">
+            <td style="width: 130px;" th:text="${#temporals.format(wallet.createdWhen, 'dd.MM.yyyy HH:mm')}"></td>
+            <td style="width: 130px;" th:text="${wallet.getName()}"></td>
+            <td style="width: 130px;" th:text="${#numbers.formatDecimal(wallet.getBalance() / 100.0, 1, 2, 'POINT')}"></td>
+<!--            <td style="width: 130px;">-->
+<!--                <a th:href="@{/wallet/myWallets/edit}" class="btn btn-primary w-100">-->
+<!--                    Изменить-->
+<!--                </a>-->
+<!--            </td>-->
+            <td style="width: 130px;">
+                <!-- Форма отправляет POST-запрос на открытие страницы редактирования -->
+                <form th:action="@{/wallet/myWallets/edit}" method="post">
+                    <!-- Скрытый ID кошелька -->
+                    <input type="hidden" name="editId" th:value="${wallet.id}">
+                    <button class="btn btn-primary w-100" type="submit">Изменить</button>
+                </form>
+            </td>
+<!--            <td style="width: 130px;" th:object="${wallet.getId()}" name="deleteId">-->
+<!--                <button class="btn btn-primary w-100"  type="submit">Удалить</button>-->
+<!--            </td>-->
+            <td style="width: 130px;">
+                <!-- 1. Оборачиваем в форму и указываем путь @PostMapping -->
+                <form th:action="@{/wallet/myWallets/delete}" method="post">
+
+                    <!-- 2. Делаем невидимое поле ввода, которое хранит ID кошелька -->
+                    <input type="hidden" name="deleteId" th:value="${wallet.id}">
+
+                    <!-- 3. Кнопка отправляет именно эту форму -->
+                    <button class="btn btn-danger w-100" type="submit">Удалить</button>
+
+                </form>
+            </td>
+
+
+        </tr>
+        </tbody>
+
+    </table>
+    <div>
+        <nav aria-label="Pagination" th:if="${wallets.totalPages gt 0}">
+            <ul class="pagination justify-content-center font-weight-bold">
+                <!-- Кнопка Назад -->
+                <li class="page-item" th:classappend="${wallets.number eq 0} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/wallet/myWallets?page={id}(id=${wallets.number lt 2 ? 1 : wallets.number})}"
+                       aria-label="Previous" title="Previous Page" data-toggle="tooltip">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+
+                <!-- Кнопки страниц (1, 2, 3...) -->
+                <li class="page-item" th:classappend="${i eq wallets.number + 1} ? 'active'"
+                    th:each="i : ${#numbers.sequence(1, wallets.totalPages, 1)}">
+                    <a class="page-link" th:href="@{/wallet/myWallets?page={id}(id=${i})}" th:text="${i}"
+                       th:title="${'Page ' + i}" data-toggle="tooltip"></a>
+                </li>
+
+                <!-- Кнопка Вперед -->
+                <li class="page-item" th:classappend="${wallets.number eq wallets.totalPages - 1} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/wallet/myWallets?page={id}(id=${wallets.number + 2})}"
+                       aria-label="Next" title="Next Page" data-toggle="tooltip">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <meta charset="UTF-8">
+  <title>Кошельки пользователей</title>
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="container py-4" >
+    <h1>Кошельки всех пользователей</h1>
+  </div>
+  <table class="table">
+    <thead>
+    <tr>
+      <th scope="col">Id</th>
+      <th scope="col">Дата создания</th>
+      <th scope="col">Логин пользователя</th>
+      <th scope="col">Название</th>
+      <th scope="col">Баланс</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="wallet : ${wallets}">
+      <td th:text="${wallet.getId()}"></td>
+      <td th:text="${#temporals.format(wallet.createdWhen, 'dd.MM.yyyy HH:mm')}"></td>
+      <td>
+        <a class="user-link" th:href="'/user/' + ${wallet.getUser().getId()}"
+           th:text="${wallet.getUser().getLogin()}">Логин</a>
+      </td>
+      <td th:text="${wallet.getName()}"></td>
+      <td th:text="${wallet.getBalance()}"></td>
+    </tr>
+    </tbody>
+
+  </table>
+  <div>
+    <nav aria-label="Pagination" th:if="${wallets.totalPages gt 0}">
+      <ul class="pagination justify-content-center font-weight-bold">
+        <!-- Кнопка Назад -->
+        <li class="page-item" th:classappend="${wallets.number eq 0} ? 'disabled'">
+          <a class="page-link"
+             th:href="@{/wallet/allWallets?page={id}(id=${wallets.number lt 2 ? 1 : wallets.number})}"
+             aria-label="Previous" title="Previous Page" data-toggle="tooltip">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+
+        <!-- Кнопки страниц (1, 2, 3...) -->
+        <li class="page-item" th:classappend="${i eq wallets.number + 1} ? 'active'"
+            th:each="i : ${#numbers.sequence(1, wallets.totalPages, 1)}">
+          <a class="page-link" th:href="@{/wallet/allWallets?page={id}(id=${i})}" th:text="${i}"
+             th:title="${'Page ' + i}" data-toggle="tooltip"></a>
+        </li>
+
+        <!-- Кнопка Вперед -->
+        <li class="page-item" th:classappend="${wallets.number eq wallets.totalPages - 1} ? 'disabled'">
+          <a class="page-link"
+             th:href="@{/wallet/allWallets?page={id}(id=${wallets.number + 2})}"
+             aria-label="Next" title="Next Page" data-toggle="tooltip">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+</div>
+</body>
+</html>

@@ -8,7 +8,7 @@
   <div xmlns:th="http://www.thymeleaf.org"
        xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
        th:fragment="header">
-      <nav class="navbar navbar-expand-lg" style="background-color: cornflowerblue">
+      <nav class="navbar navbar-expand-lg fixed-top" style="background-color: cornflowerblue">
           <div class="container-fluid">
               <a class="navbar-brand" href="/" style="color: whitesmoke">MyMoney</a>
               <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -21,12 +21,24 @@
                       <li sec:authorize="isAuthenticated() && (hasRole('ADMIN'))" class="nav-item">
                           <a class="nav-link active" aria-current="page" href="/user/allUsers">Все пользователи</a>
                       </li>
+                      <li sec:authorize="isAuthenticated() && (hasRole('ADMIN'))" class="nav-item">
+                          <a class="nav-link active" aria-current="page" href="/wallet/allWallets">Все кошельки</a>
+                      </li>
+                      <li sec:authorize="isAuthenticated() && (hasRole('ADMIN'))" class="nav-item">
+                          <a class="nav-link active" aria-current="page" href="/user/allTransactions">Все операции</a>
+                      </li>
 <!--                      <li class="nav-item">-->
 <!--                          <a class="nav-link active" aria-current="page" href="/authors">Авторы</a>-->
 <!--                      </li>-->
 <!--                      <li class="nav-item">-->
 <!--                          <a class="nav-link active" aria-current="page" href="/my/books">Мои книги</a>-->
 <!--                      </li>-->
+                      <li sec:authorize="isAuthenticated() && (hasRole('USER'))" class="nav-item">
+                          <a class="nav-link active" aria-current="page" href="/user/myProfile">Мой профиль</a>
+                      </li>
+                      <li sec:authorize="isAuthenticated() && (hasRole('USER'))" class="nav-item">
+                          <a class="nav-link active" aria-current="page" href="/wallet/myWallets">Мои кошельки</a>
+                      </li>
                   </ul>
                   <div class="d-flex align-items-center gap-3 ms-auto">
 <!--                      <form class="d-flex mb-0">-->

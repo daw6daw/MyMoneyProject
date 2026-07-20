@@ -3,15 +3,14 @@ package com.petprojects.mymoneyproject.MVC.controller;
 import com.petprojects.mymoneyproject.DTO.UserDTO;
 import com.petprojects.mymoneyproject.service.UserService;
 import io.swagger.v3.oas.annotations.Hidden;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,16 +26,21 @@ public class UserMVCController {
     }
 
     @GetMapping("/allUsers")
-    public String allUsers(Model model) {
-        List<UserDTO> userDTOList = userService.getAll();
-        model.addAttribute("users", userDTOList);
+    public String allUsers(@RequestParam(value = "page", defaultValue = "1") int page,
+                           @RequestParam(value = "size", defaultValue = "15") int pageSize,
+                           Model model) {
+        PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
+        Page<UserDTO> result = userService.getAll(pageRequest);
+
+        //List<UserDTO> userDTOList = userService.getAll();
+        model.addAttribute("users", result);
         return "user/allUsers";
     }
 
-    @GetMapping("/logout")
-    public String logout() {
-        return "redirect:/";
-    }
+//    @GetMapping("/logout")
+//    public String logout() {
+//        return "redirect:/";
+//    }
 
     //переадресует на страницу регистрации
     @GetMapping("/registration")

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <meta charset="UTF-8">
+  <title>Редактирование кошелька</title>
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="container py-4">
+    <h1>Редактирование кошелька</h1>
+  </div>
+  <div class="mb-4 p-3 ">
+    <form th:action="@{/wallet/myWallets/add}" th:object="${walletForm}" method="post" class="row g-3 align-items-end">
+
+      <!-- Поле "Название" -->
+      <div class="col-md-5">
+        <label for="nameWallet" class="form-label fw-bold small ">Название кошелька</label>
+        <input type="text" class="form-control" id="nameWallet" name="name"
+               placeholder="Например: Карта Мир, Заначка" required>
+      </div>
+
+      <div class="col-md-4">
+        <label for="walletBalance" class="form-label fw-bold small ">Начальный баланс</label>
+        <!-- Используем тип text и паттерн для валидации чисел с точкой или запятой -->
+        <input type="text"
+               class="form-control"
+               id="walletBalance"
+               name="stringBalance"
+               pattern="^[0-9]+([.,][0-9]{1,2})?$"
+               placeholder="0.00"
+               title="0.00"
+               required>
+      </div>
+
+      <div class="col-md-3">
+        <button type="submit" class="btn btn-primary w-100">
+          Сохранить
+        </button>
+      </div>
+      <div class="col-md-3">
+        <a class="btn btn-primary w-100" onclick="history.back()" type="button">Отмена</a>
+      </div>
+
+    </form>
+  </div>
+
+
+
+
+
+</div>
+</body>
+</html>
