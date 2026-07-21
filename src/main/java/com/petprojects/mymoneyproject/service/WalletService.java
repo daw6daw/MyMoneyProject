@@ -70,6 +70,23 @@ public class WalletService extends GenericService<Wallet, WalletDTO> {
         // Записываем готовый Long обратно в DTO
         walletDTO.setBalance(longBalance);
         repository.save(mapper.toEntity(walletDTO));
+    }
 
+    public void editWallet(WalletDTO walletDTO,
+                           String stringName,
+                           String stringBalance) {
+        Wallet oldWallet = repository.findById(walletDTO.getId()).get();
+        //можно так вместо .get() .orElseThrow(() -> new IllegalArgumentException("Кошелек не найден с ID: " + walletDTO.getId()));
+        oldWallet.setName(stringName);
+
+        // Конвертируем строку ("100,50") в копейки (Long) с помощью BigDecimal
+        String normalized = stringBalance.replace(",", ".");
+        java.math.BigDecimal decimalAmount = new java.math.BigDecimal(normalized);
+        java.math.BigDecimal centsAmount = decimalAmount.multiply(new java.math.BigDecimal("100"));
+        Long longBalance = centsAmount.setScale(0, java.math.RoundingMode.HALF_UP).longValue();
+
+        // Записываем готовый Long обратно в DTO
+        oldWallet.setBalance(longBalance);
+        repository.save(oldWallet);
     }
 }

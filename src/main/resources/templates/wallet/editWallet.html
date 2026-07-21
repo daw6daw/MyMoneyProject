@@ -12,13 +12,15 @@
     <h1>Редактирование кошелька</h1>
   </div>
   <div class="mb-4 p-3 ">
-    <form th:action="@{/wallet/myWallets/add}" th:object="${walletForm}" method="post" class="row g-3 align-items-end">
+    <form th:action="@{/wallet/editWallet/edit}" th:object="${editWalletForm}" method="post" class="row g-3 align-items-end">
+
+      <input type="hidden" th:field="*{id}" >
 
       <!-- Поле "Название" -->
       <div class="col-md-5">
         <label for="nameWallet" class="form-label fw-bold small ">Название кошелька</label>
-        <input type="text" class="form-control" id="nameWallet" name="name"
-               placeholder="Например: Карта Мир, Заначка" required>
+        <input type="text" class="form-control" id="nameWallet" name="stringName"
+               th:placeholder="*{name}"  required>
       </div>
 
       <div class="col-md-4">
@@ -29,7 +31,7 @@
                id="walletBalance"
                name="stringBalance"
                pattern="^[0-9]+([.,][0-9]{1,2})?$"
-               placeholder="0.00"
+               th:placeholder="*{balance / 100.00}"
                title="0.00"
                required>
       </div>

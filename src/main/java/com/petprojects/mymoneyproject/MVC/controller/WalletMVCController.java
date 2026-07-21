@@ -2,6 +2,7 @@ package com.petprojects.mymoneyproject.MVC.controller;
 
 import com.petprojects.mymoneyproject.DTO.UserDTO;
 import com.petprojects.mymoneyproject.DTO.WalletDTO;
+import com.petprojects.mymoneyproject.model.Wallet;
 import com.petprojects.mymoneyproject.service.WalletService;
 import com.petprojects.mymoneyproject.service.userdetails.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -38,7 +39,7 @@ public class WalletMVCController {
 
     @GetMapping("/myWallets")
     public String myWallets(@RequestParam(value = "page", defaultValue = "1") int page,
-                            @RequestParam(value = "size", defaultValue = "15") int pageSize,
+                            @RequestParam(value = "size", defaultValue = "10") int pageSize,
                             Model model,
                             Authentication authentication) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -64,6 +65,26 @@ public class WalletMVCController {
     public String delete(@RequestParam("deleteId") Long id) {
 
         walletService.delete(id);
+        return "redirect:/wallet/myWallets";
+    }
+
+    //TODO: сделать гет и пост маппинг для mywallets/editwallet, доделать editwallet.html, мб переименовать? хотя для пет сойдёт и так
+
+    @GetMapping("/editWallet/{editId}")
+    public String getEditWallet(@PathVariable("editId") Long id,
+                                Model model) {
+
+        WalletDTO walletDTO = walletService.getOne(id);
+        model.addAttribute("editWalletForm", walletDTO);
+        return "wallet/editWallet";
+    }
+
+    @PostMapping("/editWallet/edit")
+    public String postEditWallet(@ModelAttribute("editWalletForm") WalletDTO walletDTO,
+                                 @RequestParam("stringName") String stringName,
+                                 @RequestParam("stringBalance") String stringBalance) {
+
+        walletService.editWallet(walletDTO, stringName, stringBalance);
         return "redirect:/wallet/myWallets";
     }
 

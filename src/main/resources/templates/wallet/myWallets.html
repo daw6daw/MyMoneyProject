@@ -76,13 +76,19 @@
 <!--                    Изменить-->
 <!--                </a>-->
 <!--            </td>-->
+<!--            <td style="width: 130px;">-->
+<!--                &lt;!&ndash; Форма отправляет POST-запрос на открытие страницы редактирования &ndash;&gt;-->
+<!--                <form th:action="@{/wallet/editWallet/{id}(id=${wallet.id})}" >-->
+<!--                    &lt;!&ndash; Скрытый ID кошелька &ndash;&gt;-->
+<!--                    <input type="hidden" name="editId" th:value="${wallet.id}">-->
+<!--                    <button class="btn btn-primary w-100" type="submit">Изменить</button>-->
+<!--                </form>-->
+<!--            </td>-->
             <td style="width: 130px;">
-                <!-- Форма отправляет POST-запрос на открытие страницы редактирования -->
-                <form th:action="@{/wallet/myWallets/edit}" method="post">
-                    <!-- Скрытый ID кошелька -->
-                    <input type="hidden" name="editId" th:value="${wallet.id}">
-                    <button class="btn btn-primary w-100" type="submit">Изменить</button>
-                </form>
+                <!-- Чистая GET-ссылка вместо формы -->
+                <a th:href="@{/wallet/editWallet/{editId}(editId=${wallet.id})}" class="btn btn-primary w-100">
+                    Изменить
+                </a>
             </td>
 <!--            <td style="width: 130px;" th:object="${wallet.getId()}" name="deleteId">-->
 <!--                <button class="btn btn-primary w-100"  type="submit">Удалить</button>-->
