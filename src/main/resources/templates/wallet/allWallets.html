@@ -11,26 +11,49 @@
   <div class="container py-4" >
     <h1>Кошельки всех пользователей</h1>
   </div>
-  <table class="table">
-    <thead>
+  <table class="table  w-100">
+    <thead class="text-center align-middle">
     <tr>
-      <th scope="col">Id</th>
-      <th scope="col">Дата создания</th>
-      <th scope="col">Логин пользователя</th>
-      <th scope="col">Название</th>
-      <th scope="col">Баланс</th>
+      <th style="width: 50px;" scope="col">Id</th>
+      <th style="width: 130px;" scope="col">Кем создан</th>
+      <th style="width: 130px;" scope="col">Дата создания</th>
+      <th style="width: 130px;" scope="col">Кем обновлён</th>
+      <th style="width: 130px;" scope="col">Дата обновления</th>
+      <th style="width: 130px;" scope="col">Удалён?</th>
+      <th style="width: 130px;" scope="col">Кем удалён</th>
+      <th style="width: 130px;" scope="col">Дата удаления</th>
+      <th style="width: 130px;" scope="col">Дата восстановления</th>
+      <th style="width: 130px;" scope="col">Логин пользователя</th>
+      <th style="width: 130px;" scope="col">Название</th>
+      <th style="width: 130px;" scope="col">Баланс</th>
+      <th style="width: 130px;" scope="col"></th>
     </tr>
     </thead>
-    <tbody>
+    <tbody class="text-center align-middle">
     <tr th:each="wallet : ${wallets}">
-      <td th:text="${wallet.getId()}"></td>
-      <td th:text="${#temporals.format(wallet.createdWhen, 'dd.MM.yyyy HH:mm')}"></td>
-      <td>
+      <td style="width: 50px;" th:text="${wallet.getId()}"></td>
+      <td style="width: 130px;" th:text="${wallet.getCreatedBy()}"></td>
+      <td style="width: 130px;" th:text="${#temporals.format(wallet.createdWhen, 'dd.MM.yyyy HH:mm')}"></td>
+      <td style="width: 130px;" th:text="${wallet.getUpdatedBy()}"></td>
+      <td style="width: 130px;" th:text="${#temporals.format(wallet.updatedWhen, 'dd.MM.yyyy HH:mm')}"></td>
+      <td style="width: 130px;" class="text-center align-middle">
+        <span th:text="${wallet.deleted}" th:class="${wallet.deleted} ? 'badge bg-danger' : ''"></span>
+      </td>
+
+      <td style="width: 130px;" th:text="${wallet.getDeletedBy()}"></td>
+      <td style="width: 130px;" th:text="${#temporals.format(wallet.deletedWhen, 'dd.MM.yyyy HH:mm')}"></td>
+      <td style="width: 130px;" th:text="${#temporals.format(wallet.restoredWhen, 'dd.MM.yyyy HH:mm')}"></td>
+      <td style="width: 130px;">
         <a class="user-link" th:href="'/user/' + ${wallet.getUser().getId()}"
            th:text="${wallet.getUser().getLogin()}">Логин</a>
       </td>
-      <td th:text="${wallet.getName()}"></td>
-      <td th:text="${wallet.getBalance()}"></td>
+      <td style="width: 130px;" th:text="${wallet.getName()}"></td>
+      <td style="width: 130px;" th:text="${#numbers.formatDecimal(wallet.getBalance() / 100.0, 1, 2, 'POINT')}"></td>
+      <td style="width: 130px;">
+        <a th:href="@{/wallet/editWallet/{editId}(editId=${wallet.id})}" class="btn btn-primary w-100">
+          Изменить
+        </a>
+      </td>
     </tr>
     </tbody>
 

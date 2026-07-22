@@ -12,7 +12,7 @@
         <h1>Все пользователи</h1>
     </div>
     <table class="table">
-        <thead>
+        <thead class="text-center align-middle">
         <tr>
             <th scope="col">Фамилия</th>
             <th scope="col">Имя</th>
@@ -24,7 +24,7 @@
             <th scope="col">Дата регистрации</th>
         </tr>
         </thead>
-        <tbody>
+        <tbody class="text-center align-middle">
         <tr th:each="user : ${users}">
             <td th:text="${user.getLastName()}"></td>
             <td th:text="${user.getFirstName()}"></td>

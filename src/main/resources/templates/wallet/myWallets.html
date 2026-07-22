@@ -24,14 +24,6 @@
                        placeholder="Например: Карта Мир, Заначка" required>
             </div>
 
-            <!-- Поле "Баланс" -->
-            <!--      <div class="col-md-4">-->
-            <!--        <label for="walletBalance" class="form-label fw-bold small text-muted">Начальный баланс</label>-->
-            <!--        <input type="number" step="0.01" class="form-control" id="walletBalance" name="balance"-->
-            <!--               placeholder="0.00" min="0"-->
-            <!--               pattern="[0-9].[0-9]"required>-->
-            <!--      </div>-->
-
             <div class="col-md-4">
                 <label for="walletBalance" class="form-label fw-bold small ">Начальный баланс</label>
                 <!-- Используем тип text и паттерн для валидации чисел с точкой или запятой -->
@@ -67,32 +59,18 @@
         </tr>
         </thead>
         <tbody  class="text-center align-middle">
-        <tr  th:each="wallet : ${wallets}">
+        <tr  th:each="wallet : ${wallets}" th:if="${wallet.isDeleted == false}">
             <td style="width: 130px;" th:text="${#temporals.format(wallet.createdWhen, 'dd.MM.yyyy HH:mm')}"></td>
             <td style="width: 130px;" th:text="${wallet.getName()}"></td>
             <td style="width: 130px;" th:text="${#numbers.formatDecimal(wallet.getBalance() / 100.0, 1, 2, 'POINT')}"></td>
-<!--            <td style="width: 130px;">-->
-<!--                <a th:href="@{/wallet/myWallets/edit}" class="btn btn-primary w-100">-->
-<!--                    Изменить-->
-<!--                </a>-->
-<!--            </td>-->
-<!--            <td style="width: 130px;">-->
-<!--                &lt;!&ndash; Форма отправляет POST-запрос на открытие страницы редактирования &ndash;&gt;-->
-<!--                <form th:action="@{/wallet/editWallet/{id}(id=${wallet.id})}" >-->
-<!--                    &lt;!&ndash; Скрытый ID кошелька &ndash;&gt;-->
-<!--                    <input type="hidden" name="editId" th:value="${wallet.id}">-->
-<!--                    <button class="btn btn-primary w-100" type="submit">Изменить</button>-->
-<!--                </form>-->
-<!--            </td>-->
-            <td style="width: 130px;">
+
+            <td style="width: 130px;" >
                 <!-- Чистая GET-ссылка вместо формы -->
-                <a th:href="@{/wallet/editWallet/{editId}(editId=${wallet.id})}" class="btn btn-primary w-100">
+                <a th:href="@{/wallet/editWallet/{editId}(editId=${wallet.id})}" th:if="${wallet.name != 'Внешний мир'}" class="btn btn-primary w-100">
                     Изменить
                 </a>
             </td>
-<!--            <td style="width: 130px;" th:object="${wallet.getId()}" name="deleteId">-->
-<!--                <button class="btn btn-primary w-100"  type="submit">Удалить</button>-->
-<!--            </td>-->
+
             <td style="width: 130px;">
                 <!-- 1. Оборачиваем в форму и указываем путь @PostMapping -->
                 <form th:action="@{/wallet/myWallets/delete}" method="post">
@@ -101,7 +79,7 @@
                     <input type="hidden" name="deleteId" th:value="${wallet.id}">
 
                     <!-- 3. Кнопка отправляет именно эту форму -->
-                    <button class="btn btn-danger w-100" type="submit">Удалить</button>
+                    <button class="btn btn-danger w-100" th:if="${wallet.name != 'Внешний мир'}" type="submit">Удалить</button>
 
                 </form>
             </td>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Мой профиль</title>
+</head>
+<body>
+<div layout:fragment="content">
+
+    <!-- Ограничиваем общую ширину формы и центрируем её с помощью mx-auto -->
+    <div class="container py-4">
+
+        <h1 class="mb-4">Мой профиль</h1>
+
+        <form style="max-width: 500px;" th:object="${userForm}" th:action="@{/user/myProfile/edit}" method="post"
+              class="container py-4  align-items-end ">
+            <div class="col-12">
+                <label for="lastName" class="form-label">Фамилия</label>
+                <input th:field="*{lastName}" type="text" class="form-control" id="lastName" th:placeholder="*{lastName}"
+                       required>
+            </div>
+
+            <div class="col-12">
+                <label for="firstName" class="form-label">Имя</label>
+                <input th:field="*{firstName}" type="text" class="form-control" id="firstName"
+                       th:placeholder="*{firstName}" required>
+            </div>
+
+            <div class="col-12">
+                <label for="middleName" class="form-label">Отчество</label>
+                <input th:field="*{middleName}" type="text" class="form-control" id="middleName"
+                       th:placeholder="*{middleName}">
+            </div>
+
+            <div class="col-12">
+                <label for="login" class="form-label">Логин</label>
+                <div class="input-group">
+                    <span class="input-group-text" id="inputGroupPrepend2">@</span>
+                    <input th:field="*{login}" type="text" class="form-control" id="login"
+                           aria-describedby="inputGroupPrepend2" th:placeholder="*{login}" required>
+                </div>
+            </div>
+
+            <div class="col-12" th:if="${#fields.hasErrors('login')}">
+                <div class="alert alert-danger py-2 px-3 mb-0 text-center style-error">
+                    <p class="mb-0" th:errors="*{login}"></p>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <label for="email" class="form-label">Электронная почта</label>
+                <input th:field="*{email}" type="email" class="form-control" id="email"
+                       th:placeholder="*{email}" required>
+            </div>
+
+            <div class="col-12" th:if="${#fields.hasErrors('email')}">
+                <div class="alert alert-danger py-2 px-3 mb-0 text-center style-error">
+                    <p class="mb-0" th:errors="*{email}"></p>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <label for="number" class="form-label">Телефон</label>
+                <!-- Изменено на type="tel" для корректного ввода телефонных номеров -->
+                <input th:field="*{number}" type="tel" class="form-control" id="number"
+                       th:placeholder="*{number}" minlength="12"
+                       maxlength="12"
+                       pattern="\+7[0-9]{10}"
+                       title="Номер должен начинаться с +7 и содержать 11 цифр (например, +79879879898)" required>
+            </div>
+
+            <div class="col-12">
+                <label for="number" class="form-label">Дата регистрации</label>
+                <ol class="list-group list-group">
+                    <li class="list-group-item"
+                        th:text="*{#temporals.format(createdWhen, 'dd.MM.yyyy HH:mm')}"></li>
+                </ol>
+            </div>
+
+            <!-- Кнопка запуска модального окна -->
+            <button type="button" class="btn btn-primary col-12 mt-4" data-bs-toggle="modal"
+                    data-bs-target="#staticBackdrop">
+                Сохранить изменения
+            </button>
+
+            <!-- Модальное окно -->
+            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                 tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Заголовок модального окна</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Закрыть"></button>
+                        </div>
+                        <div class="modal-body">
+                            Обновить данные?
+                        </div>
+                        <input type="hidden" th:field="*{id}">
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                            <button type="submit" class="btn btn-primary">Сохранить</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+
+    </div>
+</div>
+</body>
+</html>

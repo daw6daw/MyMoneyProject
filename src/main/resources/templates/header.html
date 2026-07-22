@@ -5,75 +5,78 @@
     <title>Title</title>
 </head>
 <body>
-  <div xmlns:th="http://www.thymeleaf.org"
-       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-       th:fragment="header">
-      <nav class="navbar navbar-expand-lg fixed-top" style="background-color: cornflowerblue">
-          <div class="container-fluid">
-              <a class="navbar-brand" href="/" style="color: whitesmoke">MyMoney</a>
-              <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                      data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                      aria-expanded="false" aria-label="Toggle navigation">
-                  <span class="navbar-toggler-icon"></span>
-              </button>
-              <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                  <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                      <li sec:authorize="isAuthenticated() && (hasRole('ADMIN'))" class="nav-item">
-                          <a class="nav-link active" aria-current="page" href="/user/allUsers">Все пользователи</a>
-                      </li>
-                      <li sec:authorize="isAuthenticated() && (hasRole('ADMIN'))" class="nav-item">
-                          <a class="nav-link active" aria-current="page" href="/wallet/allWallets">Все кошельки</a>
-                      </li>
-                      <li sec:authorize="isAuthenticated() && (hasRole('ADMIN'))" class="nav-item">
-                          <a class="nav-link active" aria-current="page" href="/user/allTransactions">Все операции</a>
-                      </li>
-<!--                      <li class="nav-item">-->
-<!--                          <a class="nav-link active" aria-current="page" href="/authors">Авторы</a>-->
-<!--                      </li>-->
-<!--                      <li class="nav-item">-->
-<!--                          <a class="nav-link active" aria-current="page" href="/my/books">Мои книги</a>-->
-<!--                      </li>-->
-                      <li sec:authorize="isAuthenticated() && (hasRole('USER'))" class="nav-item">
-                          <a class="nav-link active" aria-current="page" href="/user/myProfile">Мой профиль</a>
-                      </li>
-                      <li sec:authorize="isAuthenticated() && (hasRole('USER'))" class="nav-item">
-                          <a class="nav-link active" aria-current="page" href="/wallet/myWallets">Мои кошельки</a>
-                      </li>
-                  </ul>
-                  <div class="d-flex align-items-center gap-3 ms-auto">
-<!--                      <form class="d-flex mb-0">-->
-<!--                          <a href="logout" class="btn btn-primary" role="button">Выйти</a>-->
-<!--                      </form>-->
-                      <form class="d-flex" sec:authorize="!isAuthenticated()">
-                          <a class="nav-link active mb-0" href="/user/registration" style="color: whitesmoke">Регистрация</a>
-                      </form>
-                      <form class="d-flex" sec:authorize="!isAuthenticated()">
-                          <a class="nav-link active mb-0" href="/user/login" style="color: whitesmoke">Войти</a>
-                      </form>
-                      <form class="d-flex" sec:authorize="isAuthenticated()" th:action="@{/user/logout}" method="POST" id="logout-form">
-<!--                          <a class="nav-link active mb-0 btn-logout" href="/user/logout" style="color: whitesmoke">Выйти</a>-->
-                          <!-- Текстовая ссылка, которая при клике отправляет скрытую форму -->
-                          <a href="/user/logout"
-                             onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                             style="color: whitesmoke; text-decoration: none !important">
-                              Выйти
-                          </a>
+<div xmlns:th="http://www.thymeleaf.org"
+     xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+     th:fragment="header">
+    <nav class="navbar navbar-expand-lg fixed-top" style="background-color: cornflowerblue">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/" style="color: whitesmoke">MyMoney</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li sec:authorize="isAuthenticated() && (hasRole('ADMIN'))" class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/user/allUsers">Все пользователи</a>
+                    </li>
+                    <li sec:authorize="isAuthenticated() && (hasRole('ADMIN'))" class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/wallet/allWallets">Все кошельки</a>
+                    </li>
+                    <li sec:authorize="isAuthenticated() && (hasRole('ADMIN'))" class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/transaction/allTransactions">Все
+                            операции</a>
+                    </li>
+                    <!--                      <li class="nav-item">-->
+                    <!--                          <a class="nav-link active" aria-current="page" href="/authors">Авторы</a>-->
+                    <!--                      </li>-->
+                    <!--                      <li class="nav-item">-->
+                    <!--                          <a class="nav-link active" aria-current="page" href="/my/books">Мои книги</a>-->
+                    <!--                      </li>-->
+                    <li sec:authorize="isAuthenticated() && (hasRole('USER'))" class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/user/myProfile">Мой профиль</a>
+                    </li>
+                    <li sec:authorize="isAuthenticated() && (hasRole('USER'))" class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/wallet/myWallets">Мои кошельки</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center gap-3 ms-auto">
+                    <!--                      <form class="d-flex mb-0">-->
+                    <!--                          <a href="logout" class="btn btn-primary" role="button">Выйти</a>-->
+                    <!--                      </form>-->
+                    <form class="d-flex" sec:authorize="!isAuthenticated()">
+                        <a class="nav-link active mb-0" href="/user/registration"
+                           style="color: whitesmoke">Регистрация</a>
+                    </form>
+                    <form class="d-flex" sec:authorize="!isAuthenticated()">
+                        <a class="nav-link active mb-0" href="/user/login" style="color: whitesmoke">Войти</a>
+                    </form>
+                    <form class="d-flex" sec:authorize="isAuthenticated()" th:action="@{/user/logout}" method="POST"
+                          id="logout-form">
+                        <!--                          <a class="nav-link active mb-0 btn-logout" href="/user/logout" style="color: whitesmoke">Выйти</a>-->
+                        <!-- Текстовая ссылка, которая при клике отправляет скрытую форму -->
+                        <a href="/user/logout"
+                           onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                           style="color: whitesmoke; text-decoration: none !important">
+                            Выйти
+                        </a>
 
-<!--                          &lt;!&ndash; Скрытая POST-форма для Spring Security &ndash;&gt;-->
-<!--                          <form id="logout-form" th:action="@{/user/logout}" method="post" style="display: none;"></form>-->
+                        <!--                          &lt;!&ndash; Скрытая POST-форма для Spring Security &ndash;&gt;-->
+                        <!--                          <form id="logout-form" th:action="@{/user/logout}" method="post" style="display: none;"></form>-->
 
-                      </form>
-<!--                      <form th:action="@{/user/logout}" method="post" style="display: inline;">-->
-<!--                          <button type="submit" class="logout-btn">Выйти</button>-->
-<!--                      </form>-->
+                    </form>
+                    <!--                      <form th:action="@{/user/logout}" method="post" style="display: inline;">-->
+                    <!--                          <button type="submit" class="logout-btn">Выйти</button>-->
+                    <!--                      </form>-->
 
-                  </div>
-              </div>
+                </div>
+            </div>
 
-          </div>
+        </div>
 
-      </nav>
+    </nav>
 
-  </div>
+</div>
 </body>
 </html>

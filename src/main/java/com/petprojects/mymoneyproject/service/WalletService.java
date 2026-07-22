@@ -17,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -67,17 +68,22 @@ public class WalletService extends GenericService<Wallet, WalletDTO> {
         java.math.BigDecimal centsAmount = decimalAmount.multiply(new java.math.BigDecimal("100"));
         Long longBalance = centsAmount.setScale(0, java.math.RoundingMode.HALF_UP).longValue();
 
+        walletDTO.setCreatedBy(walletDTO.getUser().getLogin());
+        walletDTO.setDeleted(false);
         // Записываем готовый Long обратно в DTO
         walletDTO.setBalance(longBalance);
         repository.save(mapper.toEntity(walletDTO));
     }
 
     public void editWallet(WalletDTO walletDTO,
-                           String stringName,
-                           String stringBalance) {
+                           String stringBalance,
+                           Authentication authentication) {
         Wallet oldWallet = repository.findById(walletDTO.getId()).get();
+
+        String currentUsername = authentication.getName();
+
         //можно так вместо .get() .orElseThrow(() -> new IllegalArgumentException("Кошелек не найден с ID: " + walletDTO.getId()));
-        oldWallet.setName(stringName);
+        oldWallet.setName(walletDTO.getName());
 
         // Конвертируем строку ("100,50") в копейки (Long) с помощью BigDecimal
         String normalized = stringBalance.replace(",", ".");
@@ -85,8 +91,34 @@ public class WalletService extends GenericService<Wallet, WalletDTO> {
         java.math.BigDecimal centsAmount = decimalAmount.multiply(new java.math.BigDecimal("100"));
         Long longBalance = centsAmount.setScale(0, java.math.RoundingMode.HALF_UP).longValue();
 
+
+        oldWallet.setUpdatedBy(currentUsername);
         // Записываем готовый Long обратно в DTO
         oldWallet.setBalance(longBalance);
         repository.save(oldWallet);
+    }
+
+    public void delete (Long id,
+                        Authentication authentication) {
+        String currentUsername = authentication.getName();
+
+        Wallet wallet = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Кошелек не найден с ID: " + id));
+        wallet.setDeleted(true);
+        wallet.setUpdatedBy(currentUsername);
+        wallet.setDeletedBy(currentUsername);
+        wallet.setDeletedWhen(LocalDateTime.now());
+        repository.save(wallet);
+    }
+
+    public void restore (Long id,
+                        Authentication authentication) {
+        String currentUsername = authentication.getName();
+
+        Wallet wallet = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Кошелек не найден с ID: " + id));
+
+        wallet.setDeleted(false);
+        wallet.setRestoredWhen(LocalDateTime.now());
+
+        repository.save(wallet);
     }
 }

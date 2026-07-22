@@ -1,56 +1,78 @@
 <!DOCTYPE html>
 <html lang="ru"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
+      layout:decorate="~{layout}" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
-  <meta charset="UTF-8">
-  <title>Редактирование кошелька</title>
+    <meta charset="UTF-8">
+    <title>Редактирование кошелька</title>
 </head>
 <body>
 <div layout:fragment="content">
-  <div class="container py-4">
-    <h1>Редактирование кошелька</h1>
-  </div>
-  <div class="mb-4 p-3 ">
-    <form th:action="@{/wallet/editWallet/edit}" th:object="${editWalletForm}" method="post" class="row g-3 align-items-end">
+    <div class="container py-4">
+        <h1>Редактирование кошелька</h1>
+    </div>
+    <div class="row g-3 align-items-end" th:object="${editWalletForm}">
+        <form th:action="@{/wallet/editWallet/edit}" method="post" class="row g-3 align-items-end">
 
-      <input type="hidden" th:field="*{id}" >
+            <input type="hidden" th:field="*{id}">
 
-      <!-- Поле "Название" -->
-      <div class="col-md-5">
-        <label for="nameWallet" class="form-label fw-bold small ">Название кошелька</label>
-        <input type="text" class="form-control" id="nameWallet" name="stringName"
-               th:placeholder="*{name}"  required>
-      </div>
+            <!-- Поле "Название" -->
+            <div class="col-md-3">
+                <label for="nameWallet" class="form-label fw-bold small ">Название</label>
+                <input type="text" class="form-control" id="nameWallet"
+                       th:placeholder="*{name}"
+                       th:field="*{name}"
+                       required>
+            </div>
 
-      <div class="col-md-4">
-        <label for="walletBalance" class="form-label fw-bold small ">Начальный баланс</label>
-        <!-- Используем тип text и паттерн для валидации чисел с точкой или запятой -->
-        <input type="text"
-               class="form-control"
-               id="walletBalance"
-               name="stringBalance"
-               pattern="^[0-9]+([.,][0-9]{1,2})?$"
-               th:placeholder="*{balance / 100.00}"
-               title="0.00"
-               required>
-      </div>
+            <div class="col-md-3">
+                <label for="walletBalance" class="form-label fw-bold small ">Баланс</label>
+                <!-- Используем тип text и паттерн для валидации чисел с точкой или запятой -->
+                <input type="text"
+                       class="form-control"
+                       id="walletBalance"
+                       name="stringBalance"
+                       pattern="^[0-9]+([.,][0-9]{1,2})?$"
+                       th:placeholder="*{balance / 100.00}"
+                       title="0.00"
+                       required>
+            </div>
 
-      <div class="col-md-3">
-        <button type="submit" class="btn btn-primary w-100">
-          Сохранить
-        </button>
-      </div>
-      <div class="col-md-3">
-        <a class="btn btn-primary w-100" onclick="history.back()" type="button">Отмена</a>
-      </div>
-
-    </form>
-  </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100">
+                    Сохранить
+                </button>
+            </div>
 
 
 
+        </form>
 
+        <!-- Кнопка «Восстановить» показывается, ТОЛЬКО если кошелек удален (isDeleted == true) -->
+        <form class="col-md-3" th:action="@{/wallet/editWallet/restore}" method="post"
+              sec:authorize="isAuthenticated() && (hasRole('ADMIN'))"
+              th:if="*{isDeleted}">
+            <input type="hidden" name="deleteId" th:value="*{id}">
+            <button type="submit" class="btn btn-success w-100">
+                Восстановить
+            </button>
+        </form>
+
+        <!-- Кнопка «Удалить» показывается, ТОЛЬКО если кошелек НЕ удален (isDeleted == false) -->
+        <form class="col-md-3" th:action="@{/wallet/editWallet/delete}" method="post"
+              sec:authorize="isAuthenticated() && (hasRole('ADMIN'))"
+              th:if="*{!isDeleted}">
+            <input type="hidden" name="deleteId" th:value="*{id}">
+            <button class="btn btn-danger w-100" type="submit">
+                Удалить
+            </button>
+        </form>
+
+        <div class="col-md-3">
+            <a class="btn btn-primary w-100" onclick="history.back()" type="button">Отмена</a>
+        </div>
+
+    </div>
 
 </div>
 </body>

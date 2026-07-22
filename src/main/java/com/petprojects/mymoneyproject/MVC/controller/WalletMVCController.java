@@ -62,11 +62,30 @@ public class WalletMVCController {
     }
 
     @PostMapping("/myWallets/delete")
-    public String delete(@RequestParam("deleteId") Long id) {
+    public String delete(@RequestParam("deleteId") Long id,
+                         Authentication authentication) {
 
-        walletService.delete(id);
+        walletService.delete(id, authentication);
         return "redirect:/wallet/myWallets";
     }
+
+    @PostMapping("/editWallet/delete")
+    public String deleteByAdmin(@RequestParam("deleteId") Long id,
+                                Authentication authentication) {
+
+        walletService.delete(id, authentication);
+        return "redirect:/wallet/allWallets";
+    }
+
+    @PostMapping("/editWallet/restore")
+    public String restoreByAdmin(@RequestParam("deleteId") Long id,
+                                Authentication authentication) {
+
+        walletService.restore(id, authentication);
+        return "redirect:/wallet/allWallets";
+    }
+
+
 
     //TODO: сделать гет и пост маппинг для mywallets/editwallet, доделать editwallet.html, мб переименовать? хотя для пет сойдёт и так
 
@@ -81,11 +100,19 @@ public class WalletMVCController {
 
     @PostMapping("/editWallet/edit")
     public String postEditWallet(@ModelAttribute("editWalletForm") WalletDTO walletDTO,
-                                 @RequestParam("stringName") String stringName,
-                                 @RequestParam("stringBalance") String stringBalance) {
+                                 @RequestParam("stringBalance") String stringBalance,
+                                 Authentication authentication) {
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
-        walletService.editWallet(walletDTO, stringName, stringBalance);
-        return "redirect:/wallet/myWallets";
+        walletService.editWallet(walletDTO, stringBalance, authentication);
+
+        // 4. Динамически выбираем, куда перенаправить пользователя
+        if (isAdmin) {
+            return "redirect:/wallet/allWallets"; // Админ возвращается к полному списку
+        } else {
+            return "redirect:/wallet/myWallets";  // Обычный юзер возвращается к своим кошелькам
+        }
     }
 
 }

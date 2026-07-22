@@ -22,9 +22,9 @@ import java.util.List;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
-    private final List<String> RESOURCES_WHITE_LIST = List.of("/resources/**", "/js/**", "/css/**", "/swagger-ui/**", "/", "/error/**", "/webjars/bootstrap/5.3.8/**");
-    private final List<String> NOT_USERS_WHITE_LIST = List.of("/user/registration", "/user/login", "/");
-    private final List<String> USERS_WHITE_LIST = List.of("/user/myProfile", "/wallet/myWallets", "/wallet/myWallets/add", "/wallet/myWallets/delete", "/wallet/editWallet", "/wallet/editWallet/**");
+    private final List<String> RESOURCES_WHITE_LIST = List.of("/resources/**", "/js/**", "/css/**", "/swagger-ui/**", "/error/**", "/webjars/bootstrap/5.3.8/**");
+    private final List<String> NOT_USERS_WHITE_LIST = List.of("/user/registration", "/user/login");
+    private final List<String> USERS_WHITE_LIST = List.of("/user/myProfile", "/wallet/myWallets", "/wallet/myWallets/**", "/wallet/editWallet", "/wallet/editWallet/**", "/user/myProfile/edit");
     private final List<String> ADMIN_PERMISSION_LIST = List.of("/user/**", "/wallet/**");
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -45,7 +45,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests((request) -> request
                         .requestMatchers(RESOURCES_WHITE_LIST.toArray(String[]::new)).permitAll()
                         .requestMatchers(NOT_USERS_WHITE_LIST.toArray(String[]::new)).permitAll()
-                        .requestMatchers(USERS_WHITE_LIST.toArray(String[]::new)).hasRole("USER")
+                        .requestMatchers(USERS_WHITE_LIST.toArray(String[]::new)).hasAnyRole("ADMIN", "USER")
                         .requestMatchers(ADMIN_PERMISSION_LIST.toArray(String[]::new)).hasRole("ADMIN")
                         .anyRequest().authenticated())
                 //Настройка входа в систему
