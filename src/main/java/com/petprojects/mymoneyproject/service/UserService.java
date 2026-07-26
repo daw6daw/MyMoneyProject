@@ -90,4 +90,26 @@ public class UserService extends GenericService <User, UserDTO> {
 
         repository.save(oldUser);
     }
+
+    public void delete (Long id,
+                        Authentication authentication) {
+        String currentUsername = authentication.getName();
+
+        User user = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("User не найден с ID: " + id));
+        user.setDeleted(true);
+        user.setUpdatedBy(currentUsername);
+        user.setDeletedBy(currentUsername);
+        user.setDeletedWhen(LocalDateTime.now());
+        repository.save(user);
+    }
+
+    public void restore (Long id) {
+
+        User user = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("User не найден с ID: " + id));
+
+        user.setDeleted(false);
+        user.setRestoredWhen(LocalDateTime.now());
+
+        repository.save(user);
+    }
 }

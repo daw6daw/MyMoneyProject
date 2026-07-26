@@ -78,10 +78,9 @@ public class WalletMVCController {
     }
 
     @PostMapping("/editWallet/restore")
-    public String restoreByAdmin(@RequestParam("deleteId") Long id,
-                                Authentication authentication) {
+    public String restoreByAdmin(@RequestParam("deleteId") Long id) {
 
-        walletService.restore(id, authentication);
+        walletService.restore(id);
         return "redirect:/wallet/allWallets";
     }
 

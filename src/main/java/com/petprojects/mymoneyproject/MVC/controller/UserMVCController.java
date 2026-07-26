@@ -40,11 +40,6 @@ public class UserMVCController {
         return "user/allUsers";
     }
 
-//    @GetMapping("/logout")
-//    public String logout() {
-//        return "redirect:/";
-//    }
-
     //переадресует на страницу регистрации
     @GetMapping("/registration")
     public String registration(Model model) {
@@ -124,5 +119,62 @@ public class UserMVCController {
         return "redirect:/user/myProfile";
 
         //todo сделать под админа управление аккаунтами, возможно добавить удаление акка и пользователю
+    }
+
+    @GetMapping("/allUsers/{Id}")
+    public String getAllUsersId(@PathVariable("Id") Long id,
+                                Model model) {
+
+        UserDTO userDTO = userService.getOne(id);
+        model.addAttribute("allUsersId", userDTO);
+        return "user/userForAdmin";
+    }
+
+    @PostMapping("/allUsers/{Id}")
+    public String postAllUsersId(@PathVariable("Id") Long id,
+                                 @ModelAttribute("userForm") UserDTO userDTO,
+                                 BindingResult bindingResult,
+                                 Authentication authentication) {
+
+        //Сначала проверяем запрещенные системные слова (их нельзя никому)
+        if (userDTO.getLogin().equalsIgnoreCase("admin") ||
+                userDTO.getLogin().equalsIgnoreCase("login")) {
+            bindingResult.rejectValue("login", "error.login", "Этот логин нельзя использовать");
+            return "user/allUsers/" + id;
+        }
+
+        //Проверка на не изменился ли логин. Если изменился, то если этот логин ЗАНЯТ, то выдай ошибку
+        if (!userService.getOne(id).getLogin().equals(userDTO.getLogin())) {
+            if (userService.getUserByLogin(userDTO.getLogin()) != null) {
+                bindingResult.rejectValue("login", "error.login", "Этот логин уже занят");
+                return "user/allUsers/" + id;
+            }
+        }
+
+        if (!userService.getOne(id).getEmail().equals(userDTO.getEmail())) {
+            if (userService.getUserByEmail(userDTO.getEmail()) != null) {
+                bindingResult.rejectValue("email", "error.email", "Эта электронная почта уже занята");
+                return "user/allUsers/" + id;
+            }
+        }
+
+        userService.editUser(userDTO, authentication);
+
+        return "redirect:/user/allUsers/" + id;
+    }
+
+    @PostMapping("/allUsers/delete")
+    public String deleteByAdmin(@RequestParam("id") Long id,
+                                Authentication authentication) {
+
+        userService.delete(id, authentication);
+        return "redirect:/user/allUsers";
+    }
+
+    @PostMapping("/allUsers/restore")
+    public String restoreByAdmin(@RequestParam("id") Long id) {
+
+        userService.restore(id);
+        return "redirect:/user/allUsers";
     }
 }

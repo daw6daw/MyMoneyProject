@@ -14,6 +14,7 @@
     <table class="table">
         <thead class="text-center align-middle">
         <tr>
+            <th scope="col">Id</th>
             <th scope="col">Фамилия</th>
             <th scope="col">Имя</th>
             <th scope="col">Отчество</th>
@@ -22,21 +23,38 @@
             <th scope="col">Номер</th>
             <th scope="col">Роль</th>
             <th scope="col">Дата регистрации</th>
+            <th scope="col">Кем обновлён</th>
+            <th scope="col">Дата обновления</th>
+            <th scope="col">Удалён?</th>
+            <th scope="col">Кем удалён</th>
+            <th scope="col">Дата удаления</th>
+            <th scope="col">Дата восстановления</th>
         </tr>
         </thead>
         <tbody class="text-center align-middle">
         <tr th:each="user : ${users}">
+            <td th:text="${user.getId()}"></td>
             <td th:text="${user.getLastName()}"></td>
             <td th:text="${user.getFirstName()}"></td>
             <td th:text="${user.getMiddleName()}"></td>
             <td th:text="${user.getEmail()}"></td>
             <td>
-                <a class="user-link" th:href="'/user/' + ${user.getId()}"
+                <a class="user-link" th:href="'/user/allUsers/' + ${user.getId()}"
                 th:text="${user.getLogin()}">Логин</a>
             </td>
+
             <td th:text="${user.getNumber()}"></td>
             <td th:text="${user.getRole().getRoleName()}"></td>
             <td th:text="${#temporals.format(user.createdWhen, 'dd.MM.yyyy HH:mm')}"></td>
+            <td th:text="${user.getUpdatedBy()}"></td>
+            <td th:text="${#temporals.format(user.updatedWhen, 'dd.MM.yyyy HH:mm')}"></td>
+            <td style="width: 130px;" class="text-center align-middle">
+                <span th:text="${user.deleted}" th:class="${user.deleted} ? 'badge bg-danger' : ''"></span>
+            </td>
+            <td th:text="${user.getDeletedBy()}"></td>
+            <td th:text="${#temporals.format(user.deletedWhen, 'dd.MM.yyyy HH:mm')}"></td>
+            <td th:text="${#temporals.format(user.restoredWhen, 'dd.MM.yyyy HH:mm')}"></td>
+
         </tr>
         </tbody>
 

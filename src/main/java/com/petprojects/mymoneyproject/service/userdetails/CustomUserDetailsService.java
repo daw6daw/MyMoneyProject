@@ -36,12 +36,15 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         if (username.equals(adminUserName)) {
             return new CustomUserDetails(null, username, adminPassword, List.of(new SimpleGrantedAuthority("ROLE_" + adminRole)));
-        }
-        else {
+        } else {
             User user = userRepository.findUserByLogin(username);
-            List<GrantedAuthority> authorities = new ArrayList<>();
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().getRoleName()));
-            return new CustomUserDetails(user.getId().intValue(), username, user.getPassword(), authorities);
+            if (user.isDeleted()) {
+                throw new UsernameNotFoundException("User is deleted");
+            } else {
+                List<GrantedAuthority> authorities = new ArrayList<>();
+                authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().getRoleName()));
+                return new CustomUserDetails(user.getId().intValue(), username, user.getPassword(), authorities);
+            }
         }
     }
 }

@@ -110,10 +110,7 @@ public class WalletService extends GenericService<Wallet, WalletDTO> {
         repository.save(wallet);
     }
 
-    public void restore (Long id,
-                        Authentication authentication) {
-        String currentUsername = authentication.getName();
-
+    public void restore (Long id) {
         Wallet wallet = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Кошелек не найден с ID: " + id));
 
         wallet.setDeleted(false);
