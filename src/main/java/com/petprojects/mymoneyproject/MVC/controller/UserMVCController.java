@@ -177,4 +177,6 @@ public class UserMVCController {
         userService.restore(id);
         return "redirect:/user/allUsers";
     }
+
+    //todo: начать работу над категориями
 }

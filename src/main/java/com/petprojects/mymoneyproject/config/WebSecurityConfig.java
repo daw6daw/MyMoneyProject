@@ -24,7 +24,13 @@ public class WebSecurityConfig {
 
     private final List<String> RESOURCES_WHITE_LIST = List.of("/resources/**", "/js/**", "/css/**", "/swagger-ui/**", "/error/**", "/webjars/bootstrap/5.3.8/**");
     private final List<String> NOT_USERS_WHITE_LIST = List.of("/user/registration", "/user/login");
-    private final List<String> USERS_WHITE_LIST = List.of("/user/myProfile", "/wallet/myWallets", "/wallet/myWallets/**", "/wallet/editWallet", "/wallet/editWallet/**", "/user/myProfile/edit");
+    private final List<String> USERS_WHITE_LIST = List.of("/user/myProfile",
+            "/wallet/myWallets",
+            "/wallet/myWallets/**",
+            "/wallet/editWallet",
+            "/wallet/editWallet/**",
+            "/user/myProfile/edit",
+            "/category/editCategory/**");
     private final List<String> ADMIN_PERMISSION_LIST = List.of("/user/**", "/wallet/**", "/user/allUsers/**");
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -55,11 +61,11 @@ public class WebSecurityConfig {
                         .permitAll()
                 )
                 .logout((logout) -> logout
-                        .logoutUrl("/user/logout")
-                        .logoutSuccessUrl("/user/login")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
-                        .permitAll()
+                                .logoutUrl("/user/logout")
+                                .logoutSuccessUrl("/user/login")
+                                .invalidateHttpSession(true)
+                                .deleteCookies("JSESSIONID")
+                                .permitAll()
                         //.logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
                 )
                 .exceptionHandling(exception -> exception

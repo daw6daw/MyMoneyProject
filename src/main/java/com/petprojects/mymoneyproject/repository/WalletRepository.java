@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface WalletRepository extends GenericRepository<Wallet>{
     Page<Wallet> findAllByUserId(Long userId, Pageable pageable);
+    List<Wallet> findAllByUserId(Long userId);
 }

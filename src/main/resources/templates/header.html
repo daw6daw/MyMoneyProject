@@ -40,6 +40,9 @@
                     <li sec:authorize="isAuthenticated() && (hasRole('USER'))" class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/wallet/myWallets">Мои кошельки</a>
                     </li>
+                    <li sec:authorize="isAuthenticated() && (hasRole('USER'))" class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/transaction/history">История</a>
+                    </li>
                 </ul>
                 <div class="d-flex align-items-center gap-3 ms-auto">
                     <!--                      <form class="d-flex mb-0">-->

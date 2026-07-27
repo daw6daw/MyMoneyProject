@@ -1,8 +1,6 @@
 package com.petprojects.mymoneyproject.MVC.controller;
 
-import com.petprojects.mymoneyproject.DTO.UserDTO;
 import com.petprojects.mymoneyproject.DTO.WalletDTO;
-import com.petprojects.mymoneyproject.model.Wallet;
 import com.petprojects.mymoneyproject.service.WalletService;
 import com.petprojects.mymoneyproject.service.userdetails.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -11,7 +9,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -46,7 +43,7 @@ public class WalletMVCController {
         Long id = userDetails.getUserId().longValue();
 
         PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
-        Page<WalletDTO> result = walletService.getWalletsById(pageRequest, id);
+        Page<WalletDTO> result = walletService.getPageWalletsById(pageRequest, id);
 
         model.addAttribute("wallets", result);
         return "wallet/myWallets";

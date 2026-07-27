@@ -1,16 +1,210 @@
 <!DOCTYPE html>
 <html lang="ru"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
+      layout:decorate="~{layout}" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>MyMoney</title>
 </head>
 <body>
-    <div layout:fragment="content">
-        <div class="container py-4" >
-            <h1>Main page</h1>
-        </div>
+<div layout:fragment="content">
+    <div class="container py-4">
+        <h1>Main page</h1>
     </div>
+    <div>
+        <div>
+            <h5>Категории на расходы</h5>
+
+            <!-- БЛОК ВЫВОДА КНОПОК РАСХОДОВ -->
+            <div class="d-flex flex-wrap gap-2 my-3">
+                <!-- Проверяем, что список не пустой, и крутим цикл -->
+                <div th:each="cat : ${categoriesExpense}">
+                    <!-- ПОПРАВКА: Таргет теперь указывает строго на окно расхода -->
+                    <button type="button" class="btn btn-outline-primary fw-medium px-3 py-2 rounded-pill"
+                            data-bs-toggle="modal"
+                            th:data-bs-target="'#modal-expense-' + ${cat.id}" th:text="${cat.getName()}">
+                    </button>
+
+                    <!-- Модальное окно для конкретной категории расхода -->
+                    <!-- ПОПРАВКА: Уникальный ID 'modal-expense-' и динамический aria-labelledby -->
+                    <div class="modal fade" th:id="'modal-expense-' + ${cat.id}"
+                         tabindex="-1" th:aria-labelledby="'expenseLabel-cat-' + ${cat.id}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <!-- ПОПРАВКА: Уникальный динамический ID для заголовка -->
+                                    <h1 class="modal-title fs-5" th:id="'expenseLabel-cat-' + ${cat.id}">Добавить транзакцию</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Закрыть"></button>
+                                </div>
+
+                                <div class="modal-body">
+                                    <div>
+                                        <label class="form-label">Кошелёк</label>
+                                        <select class="form-select" aria-label="Пример выбора по умолчанию">
+                                            <option th:each="wallet : ${wallets}"
+                                                    th:text="${wallet.getName()} + ' баланс: ' + ${#numbers.formatDecimal(wallet.getBalance() / 100.0, 1, 2, 'POINT')}"
+                                                    th:if="${wallet.name != 'Внешний мир'}"></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12 mt-2">
+                                        <label class="form-label">Сумма</label>
+                                        <input type="text" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <!-- Ссылка "Изменить" для перехода на страницу GET-метода -->
+                                    <a th:href="@{/category/editCategory/{editId}(editId=${cat.id})}" class="btn btn-primary">Изменить</a>
+
+                                    <!-- ПОПРАВКА: Добавлен класс d-inline для ровного расположения кнопок -->
+                                    <form th:action="@{/deleteCategory}" method="post" class="d-inline">
+                                        <input type="hidden" name="deleteId" th:value="${cat.id}">
+                                        <button class="btn btn-danger" type="submit">Удалить</button>
+                                    </form>
+
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                    <button type="submit" class="btn btn-primary">Добавить</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Форма создания новой категории расходов (Изолирована от списка выше) -->
+            <form style="max-width: 500px;" th:action="@{/createExpense}" th:object="${expenseForm}" method="post">
+
+                <!-- Кнопка запуска модального окна создания НОВОЙ категории расходов -->
+                <button type="button" class="btn btn-primary col-6 mt-4" data-bs-toggle="modal"
+                        data-bs-target="#modalCreateExpenseCategory">
+                    Добавить
+                </button>
+
+                <!-- Модальное окно создания НОВОЙ категории расходов -->
+                <!-- ПОПРАВКА: Изменен ID на уникальный 'modalCreateExpenseCategory' -->
+                <div class="modal fade" id="modalCreateExpenseCategory" data-bs-backdrop="static" data-bs-keyboard="false"
+                     tabindex="-1" aria-labelledby="modalCreateExpenseCategoryLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="modalCreateExpenseCategoryLabel">Добавить категорию расходов</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Закрыть"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                <label for="nameCategory" class="form-label fw-bold small">Название категории</label>
+                                <input type="text" class="form-control" id="nameCategory" name="name"
+                                       placeholder="Например: продукты, лекарства" required>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                <button type="submit" class="btn btn-primary">Добавить</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
+        <div>
+            <h5>Категории на доходы</h5>
+
+            <!-- БЛОК ВЫВОДА КНОПОК ДОХОДОВ -->
+            <div class="d-flex flex-wrap gap-2 my-3">
+                <!-- Проверяем, что список не пустой, и крутим цикл -->
+                <div th:each="cat : ${categoriesIncome}">
+                    <!-- ПОПРАВКА: Таргет теперь указывает строго на окно дохода -->
+                    <button type="button" class="btn btn-outline-primary fw-medium px-3 py-2 rounded-pill"
+                            data-bs-toggle="modal"
+                            th:data-bs-target="'#modal-income-' + ${cat.id}" th:text="${cat.getName()}">
+                    </button>
+
+                    <!-- Модальное окно -->
+                    <!-- ПОПРАВКА: Уникальный ID 'modal-income-' и динамический aria-labelledby -->
+                    <div class="modal fade" th:id="'modal-income-' + ${cat.id}"
+                         tabindex="-1" th:aria-labelledby="'incomeLabel-cat-' + ${cat.id}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <!-- ПОПРАВКА: Уникальный динамический ID для заголовка -->
+                                    <h1 class="modal-title fs-5" th:id="'incomeLabel-cat-' + ${cat.id}">Добавить транзакцию</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Закрыть"></button>
+                                </div>
+
+                                <div class="modal-body">
+                                    <div>
+                                        <label class="form-label">Кошелёк</label>
+                                        <select class="form-select" aria-label="Пример выбора по умолчанию">
+                                            <option th:each="wallet : ${wallets}"
+                                                    th:text="${wallet.getName()} + ' баланс: ' + ${#numbers.formatDecimal(wallet.getBalance() / 100.0, 1, 2, 'POINT')}"
+                                                    th:if="${wallet.name != 'Внешний мир'}"></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12 mt-2">
+                                        <label class="form-label">Сумма</label>
+                                        <input type="text" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <a th:href="@{/category/editCategory/{editId}(editId=${cat.id})}" class="btn btn-primary">Изменить</a>
+
+                                    <!-- ПОПРАВКА: Добавлен класс d-inline для ровного расположения кнопок -->
+                                    <form th:action="@{/deleteCategory}" method="post" class="d-inline">
+                                        <input type="hidden" name="deleteId" th:value="${cat.id}">
+                                        <button class="btn btn-danger" type="submit">Удалить</button>
+                                    </form>
+
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                    <button type="submit" class="btn btn-primary">Добавить</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Форма создания новой категории доходов (Полностью изолирована от списка выше) -->
+            <form style="max-width: 500px;" th:action="@{/createIncome}" th:object="${incomeForm}" method="post">
+
+                <!-- Кнопка запуска модального окна ВЕРХНЯЯ -->
+                <button type="button" class="btn btn-primary col-6 mt-4" data-bs-toggle="modal"
+                        data-bs-target="#modalCreateIncomeCategory">
+                    Добавить
+                </button>
+
+                <!-- Модальное окно -->
+                <!-- ПОПРАВКА: Изменен ID на уникальный 'modalCreateIncomeCategory' -->
+                <div class="modal fade" id="modalCreateIncomeCategory" data-bs-backdrop="static" data-bs-keyboard="false"
+                     tabindex="-1" aria-labelledby="modalCreateIncomeCategoryLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="modalCreateIncomeCategoryLabel">Добавить категорию дохов</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Закрыть"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                <label for="nameCategory2" class="form-label fw-bold small">Название категории</label>
+                                <input type="text" class="form-control" id="nameCategory2" name="name"
+                                       placeholder="Например: зарплата, подработка" required>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                <button type="submit" class="btn btn-primary">Добавить</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+
+</div>
 </body>
 </html>
