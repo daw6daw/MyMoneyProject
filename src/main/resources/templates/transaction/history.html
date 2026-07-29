@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Мои транзакции</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container py-4">
+        <h1>Мои транзакции</h1>
+
+    </div>
+
+    <table class="table">
+        <thead class="text-center align-middle">
+        <tr>
+            <th style="width: 130px;" scope="col">Дата</th>
+            <th style="width: 130px;" scope="col">Тип операции</th>
+            <th style="width: 130px;" scope="col">Количество</th>
+            <th style="width: 130px;" scope="col">Описание</th>
+            <th style="width: 130px;" scope="col">Категория</th>
+            <th style="width: 130px;" scope="col">С какого кошелька</th>
+            <th style="width: 130px;" scope="col">На какой кошелёк</th>
+        </tr>
+        </thead>
+        <tbody  class="text-center align-middle">
+        <tr th:each="transaction : ${transactions}" th:if="${transaction.isDeleted == false}">
+            <td style="width: 130px;" th:text="${#temporals.format(transaction.createdWhen, 'dd.MM.yyyy HH:mm')}"></td>
+            <td style="width: 130px;" th:text="${transaction.type.getTransactionTypeTextDisplay()}"></td>
+            <td style="width: 130px;" th:text="${#numbers.formatDecimal(transaction.getAmount() / 100.0, 1, 2, 'POINT')}"></td>
+            <td style="width: 130px;" th:text="${transaction.description}"></td>
+            <td style="width: 130px;" th:text="${transaction.getCategory()?.getName()}"></td>
+            <td style="width: 130px;" th:text="${transaction.fromWallet.name}"></td>
+            <td style="width: 130px;" th:text="${transaction.getToWallet().name}"></td>
+
+<!--            <td style="width: 130px;" >-->
+<!--                &lt;!&ndash; Чистая GET-ссылка вместо формы &ndash;&gt;-->
+<!--                <a th:href="@{/wallet/editWallet/{editId}(editId=${transaction.id})}" th:if="${transaction.name != 'Внешний мир'}" class="btn btn-primary w-100">-->
+<!--                    Изменить-->
+<!--                </a>-->
+<!--            </td>-->
+
+<!--            <td style="width: 130px;">-->
+<!--                &lt;!&ndash; 1. Оборачиваем в форму и указываем путь @PostMapping &ndash;&gt;-->
+<!--                <form th:action="@{/wallet/myWallets/delete}" method="post">-->
+
+<!--                    &lt;!&ndash; 2. Делаем невидимое поле ввода, которое хранит ID кошелька &ndash;&gt;-->
+<!--                    <input type="hidden" name="deleteId" th:value="${transaction.id}">-->
+
+<!--                    &lt;!&ndash; 3. Кнопка отправляет именно эту форму &ndash;&gt;-->
+<!--                    <button class="btn btn-danger w-100" th:if="${transaction.name != 'Внешний мир'}" type="submit">Удалить</button>-->
+
+<!--                </form>-->
+<!--            </td>-->
+
+
+        </tr>
+        </tbody>
+
+    </table>
+    <div>
+        <nav aria-label="Pagination" th:if="${transactions.totalPages gt 0}">
+            <ul class="pagination justify-content-center font-weight-bold">
+                <!-- Кнопка Назад -->
+                <li class="page-item" th:classappend="${transactions.number eq 0} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/transaction/history?page={id}(id=${transactions.number lt 2 ? 1 : transactions.number})}"
+                       aria-label="Previous" title="Previous Page" data-toggle="tooltip">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+
+                <!-- Кнопки страниц (1, 2, 3...) -->
+                <li class="page-item" th:classappend="${i eq transactions.number + 1} ? 'active'"
+                    th:each="i : ${#numbers.sequence(1, transactions.totalPages, 1)}">
+                    <a class="page-link" th:href="@{/transaction/history?page={id}(id=${i})}" th:text="${i}"
+                       th:title="${'Page ' + i}" data-toggle="tooltip"></a>
+                </li>
+
+                <!-- Кнопка Вперед -->
+                <li class="page-item" th:classappend="${transactions.number eq transactions.totalPages - 1} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/transaction/history?page={id}(id=${transactions.number + 2})}"
+                       aria-label="Next" title="Next Page" data-toggle="tooltip">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+</div>
+</body>
+</html>

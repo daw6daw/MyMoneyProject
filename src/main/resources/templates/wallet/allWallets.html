@@ -44,7 +44,7 @@
       <td style="width: 130px;" th:text="${#temporals.format(wallet.deletedWhen, 'dd.MM.yyyy HH:mm')}"></td>
       <td style="width: 130px;" th:text="${#temporals.format(wallet.restoredWhen, 'dd.MM.yyyy HH:mm')}"></td>
       <td style="width: 130px;">
-        <a class="user-link" th:href="'/user/' + ${wallet.getUser().getId()}"
+        <a class="user-link" th:href="'/user/allUsers/' + ${wallet.getUser().getId()}"
            th:text="${wallet.getUser().getLogin()}">Логин</a>
       </td>
       <td style="width: 130px;" th:text="${wallet.getName()}"></td>

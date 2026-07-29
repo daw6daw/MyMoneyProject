@@ -28,12 +28,10 @@
                         <a class="nav-link active" aria-current="page" href="/transaction/allTransactions">Все
                             операции</a>
                     </li>
-                    <!--                      <li class="nav-item">-->
-                    <!--                          <a class="nav-link active" aria-current="page" href="/authors">Авторы</a>-->
-                    <!--                      </li>-->
-                    <!--                      <li class="nav-item">-->
-                    <!--                          <a class="nav-link active" aria-current="page" href="/my/books">Мои книги</a>-->
-                    <!--                      </li>-->
+                    <li sec:authorize="isAuthenticated() && (hasRole('ADMIN'))" class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/category/allCategories">Все
+                            категории</a>
+                    </li>
                     <li sec:authorize="isAuthenticated() && (hasRole('USER'))" class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/user/myProfile">Мой профиль</a>
                     </li>

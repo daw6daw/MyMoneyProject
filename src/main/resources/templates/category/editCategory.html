@@ -31,6 +31,29 @@
 
         </form>
 
+        <!-- Кнопка «Восстановить» показывается, ТОЛЬКО если кошелек удален (isDeleted == true) -->
+        <form class="col-md-3" th:action="@{/category/editCategory/restore}" method="post"
+              sec:authorize="isAuthenticated() && (hasRole('ADMIN'))"
+              th:if="*{isDeleted}">
+            <input type="hidden" name="deleteId" th:value="*{id}">
+            <button type="submit" class="btn btn-success w-100">
+                Восстановить
+            </button>
+        </form>
+
+        <!-- Кнопка «Удалить» показывается, ТОЛЬКО если кошелек НЕ удален (isDeleted == false) -->
+        <form class="col-md-3" th:action="@{/category/editCategory/delete}" method="post"
+              sec:authorize="isAuthenticated() && (hasRole('ADMIN'))"
+              th:if="*{!isDeleted}">
+            <input type="hidden" name="deleteId" th:value="*{id}">
+            <button class="btn btn-danger w-100" type="submit">
+                Удалить
+            </button>
+        </form>
+
+        <div class="col-md-3">
+            <a class="btn btn-primary w-100" onclick="history.back()" type="button">Отмена</a>
+        </div>
     </div>
 </div>
 </body>

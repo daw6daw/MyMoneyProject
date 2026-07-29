@@ -7,7 +7,7 @@
     <title>MyMoney</title>
 </head>
 <body>
-<div layout:fragment="content">
+<div layout:fragment="content" >
     <div class="container py-4">
         <h1>Main page</h1>
     </div>
@@ -33,7 +33,8 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <!-- ПОПРАВКА: Уникальный динамический ID для заголовка -->
-                                    <h1 class="modal-title fs-5" th:id="'expenseLabel-cat-' + ${cat.id}">Добавить транзакцию</h1>
+                                    <h1 class="modal-title fs-5" th:id="'expenseLabel-cat-' + ${cat.id}">Добавить
+                                        транзакцию</h1>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Закрыть"></button>
                                 </div>
@@ -41,29 +42,52 @@
                                 <div class="modal-body">
                                     <div>
                                         <label class="form-label">Кошелёк</label>
-                                        <select class="form-select" aria-label="Пример выбора по умолчанию">
+                                        <!-- ДОБАВЛЕНО: name и th:form -->
+                                        <select class="form-select" name="fromWalletId"
+                                                th:form="'transactionForm-' + ${cat.id}" required>
+                                            <!-- ДОБАВЛЕНО: th:value -->
                                             <option th:each="wallet : ${wallets}"
+                                                    th:value="${wallet.id}"
                                                     th:text="${wallet.getName()} + ' баланс: ' + ${#numbers.formatDecimal(wallet.getBalance() / 100.0, 1, 2, 'POINT')}"
-                                                    th:if="${wallet.name != 'Внешний мир'}"></option>
+                                                    th:if="${wallet.name != 'Внешний мир' and !wallet.isDeleted()}"></option>
                                         </select>
                                     </div>
                                     <div class="col-12 mt-2">
                                         <label class="form-label">Сумма</label>
-                                        <input type="text" class="form-control" required>
+                                        <!-- ДОБАВЛЕНО: name и th:form -->
+                                        <input type="text" class="form-control" name="amount"
+                                               th:form="'transactionForm-' + ${cat.id}" required>
+                                    </div>
+                                    <div class="col-12 mt-2">
+                                        <label class="form-label">Комментарий</label>
+                                        <!-- ДОБАВЛЕНО: name и th:form -->
+                                        <input type="text" class="form-control" name="description"
+                                               th:form="'transactionForm-' + ${cat.id}" >
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <!-- Ссылка "Изменить" для перехода на страницу GET-метода -->
-                                    <a th:href="@{/category/editCategory/{editId}(editId=${cat.id})}" class="btn btn-primary">Изменить</a>
+                                    <!-- Ссылка Изменить работает сама по себе -->
+                                    <a th:href="@{/category/editCategory/{editId}(editId=${cat.id})}"
+                                       class="btn btn-primary">Изменить</a>
 
-                                    <!-- ПОПРАВКА: Добавлен класс d-inline для ровного расположения кнопок -->
+                                    <!-- Форма удаления изолирована, вложенности нет -->
                                     <form th:action="@{/deleteCategory}" method="post" class="d-inline">
                                         <input type="hidden" name="deleteId" th:value="${cat.id}">
                                         <button class="btn btn-danger" type="submit">Удалить</button>
                                     </form>
 
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                                    <button type="submit" class="btn btn-primary">Добавить</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена
+                                    </button>
+
+                                    <!-- А вот и сама скрытая форма для транзакции, к которой привязаны поля выше через th:form -->
+                                    <form th:action="@{/makeExpenseTransaction}" method="post"
+                                          th:id="'transactionForm-' + ${cat.id}" class="d-inline">
+                                        <!-- Скрытый ID категории, чтобы сервер знал, куда пойдет расход -->
+                                        <input type="hidden" name="categoryId" th:value="${cat.id}">
+
+                                        <!-- Кнопка Добавить отправляет именно эту форму -->
+                                        <button type="submit" class="btn btn-primary">Добавить</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -82,12 +106,14 @@
 
                 <!-- Модальное окно создания НОВОЙ категории расходов -->
                 <!-- ПОПРАВКА: Изменен ID на уникальный 'modalCreateExpenseCategory' -->
-                <div class="modal fade" id="modalCreateExpenseCategory" data-bs-backdrop="static" data-bs-keyboard="false"
+                <div class="modal fade" id="modalCreateExpenseCategory" data-bs-backdrop="static"
+                     data-bs-keyboard="false"
                      tabindex="-1" aria-labelledby="modalCreateExpenseCategoryLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="modalCreateExpenseCategoryLabel">Добавить категорию расходов</h1>
+                                <h1 class="modal-title fs-5" id="modalCreateExpenseCategoryLabel">Добавить категорию
+                                    расходов</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Закрыть"></button>
                             </div>
@@ -129,7 +155,8 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <!-- ПОПРАВКА: Уникальный динамический ID для заголовка -->
-                                    <h1 class="modal-title fs-5" th:id="'incomeLabel-cat-' + ${cat.id}">Добавить транзакцию</h1>
+                                    <h1 class="modal-title fs-5" th:id="'incomeLabel-cat-' + ${cat.id}">Добавить
+                                        транзакцию</h1>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Закрыть"></button>
                                 </div>
@@ -137,19 +164,32 @@
                                 <div class="modal-body">
                                     <div>
                                         <label class="form-label">Кошелёк</label>
-                                        <select class="form-select" aria-label="Пример выбора по умолчанию">
+                                        <!-- ДОБАВЛЕНО: name и th:form -->
+                                        <select class="form-select" name="toWalletId"
+                                                th:form="'transactionForm-' + ${cat.id}" required>
+                                            <!-- ДОБАВЛЕНО: th:value -->
                                             <option th:each="wallet : ${wallets}"
+                                                    th:value="${wallet.id}"
                                                     th:text="${wallet.getName()} + ' баланс: ' + ${#numbers.formatDecimal(wallet.getBalance() / 100.0, 1, 2, 'POINT')}"
-                                                    th:if="${wallet.name != 'Внешний мир'}"></option>
+                                                    th:if="${wallet.name != 'Внешний мир' and !wallet.isDeleted()}"></option>
                                         </select>
                                     </div>
                                     <div class="col-12 mt-2">
                                         <label class="form-label">Сумма</label>
-                                        <input type="text" class="form-control" required>
+                                        <!-- ДОБАВЛЕНО: name и th:form -->
+                                        <input type="text" class="form-control" name="amount"
+                                               th:form="'transactionForm-' + ${cat.id}" required>
+                                    </div>
+                                    <div class="col-12 mt-2">
+                                        <label class="form-label">Комментарий</label>
+                                        <!-- ДОБАВЛЕНО: name и th:form -->
+                                        <input type="text" class="form-control" name="description"
+                                               th:form="'transactionForm-' + ${cat.id}" >
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <a th:href="@{/category/editCategory/{editId}(editId=${cat.id})}" class="btn btn-primary">Изменить</a>
+                                    <a th:href="@{/category/editCategory/{editId}(editId=${cat.id})}"
+                                       class="btn btn-primary">Изменить</a>
 
                                     <!-- ПОПРАВКА: Добавлен класс d-inline для ровного расположения кнопок -->
                                     <form th:action="@{/deleteCategory}" method="post" class="d-inline">
@@ -157,8 +197,17 @@
                                         <button class="btn btn-danger" type="submit">Удалить</button>
                                     </form>
 
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                                    <button type="submit" class="btn btn-primary">Добавить</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена
+                                    </button>
+                                    <!-- А вот и сама скрытая форма для транзакции, к которой привязаны поля выше через th:form -->
+                                    <form th:action="@{/makeIncomeTransaction}" method="post"
+                                          th:id="'transactionForm-' + ${cat.id}" class="d-inline">
+                                        <!-- Скрытый ID категории, чтобы сервер знал, куда пойдет расход -->
+                                        <input type="hidden" name="categoryId" th:value="${cat.id}">
+
+                                        <!-- Кнопка Добавить отправляет именно эту форму -->
+                                        <button type="submit" class="btn btn-primary">Добавить</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -177,12 +226,14 @@
 
                 <!-- Модальное окно -->
                 <!-- ПОПРАВКА: Изменен ID на уникальный 'modalCreateIncomeCategory' -->
-                <div class="modal fade" id="modalCreateIncomeCategory" data-bs-backdrop="static" data-bs-keyboard="false"
+                <div class="modal fade" id="modalCreateIncomeCategory" data-bs-backdrop="static"
+                     data-bs-keyboard="false"
                      tabindex="-1" aria-labelledby="modalCreateIncomeCategoryLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="modalCreateIncomeCategoryLabel">Добавить категорию дохов</h1>
+                                <h1 class="modal-title fs-5" id="modalCreateIncomeCategoryLabel">Добавить категорию
+                                    дохов</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Закрыть"></button>
                             </div>
@@ -203,6 +254,67 @@
         </div>
 
     </div>
+    <div class="card p-4 shadow-sm my-4 container" style="max-width: 500px; border-radius: 15px;">
+        <h5 class="card-title fw-bold mb-4 text-center text-secondary">Диаграмма расходов</h5>
+
+        <div class="d-flex align-items-center justify-content-center gap-4 flex-wrap">
+
+            <!-- КРУГОВАЯ ДИАГРАММА НА ЧИСТОМ CSS -->
+            <!-- Проценты переведены в градусы (360° = 100%):
+                 Продукты (45%) = 162°, ЖКХ (25%) = 90°, Бензин (18%) = 65°, Аренда (12%) = 43° -->
+            <div class="rounded-circle shadow-sm"
+                 style="width: 180px;
+                    height: 180px;
+                    background: conic-gradient(
+                        #0d6efd 0deg 162deg,
+                        #198754 162deg 252deg,
+                        #ffc107 252deg 317deg,
+                        #dc3545 317deg 360deg
+                    );">
+            </div>
+
+            <!-- ЛЕГЕНДА С ЦВЕТАМИ -->
+            <div class="flex-grow-1">
+                <!-- Продукты -->
+                <div class="d-flex align-items-center justify-content-between mb-2 small fw-medium">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="rounded-circle" style="width: 12px; height: 12px; background-color: #0d6efd;"></div>
+                        <span>Продукты</span>
+                    </div>
+                    <span class="text-secondary">45%</span>
+                </div>
+
+                <!-- ЖКХ -->
+                <div class="d-flex align-items-center justify-content-between mb-2 small fw-medium">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="rounded-circle" style="width: 12px; height: 12px; background-color: #198754;"></div>
+                        <span>ЖКХ</span>
+                    </div>
+                    <span class="text-secondary">25%</span>
+                </div>
+
+                <!-- Бензин -->
+                <div class="d-flex align-items-center justify-content-between mb-2 small fw-medium">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="rounded-circle" style="width: 12px; height: 12px; background-color: #ffc107;"></div>
+                        <span>Бензин</span>
+                    </div>
+                    <span class="text-secondary">18%</span>
+                </div>
+
+                <!-- Аренда -->
+                <div class="d-flex align-items-center justify-content-between small fw-medium">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="rounded-circle" style="width: 12px; height: 12px; background-color: #dc3545;"></div>
+                        <span>Аренда</span>
+                    </div>
+                    <span class="text-secondary">12%</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
 
 
 </div>

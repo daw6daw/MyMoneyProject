@@ -24,7 +24,7 @@ public class WalletMVCController {
 
     @GetMapping("/allWallets")
     public String allUsersWallets(@RequestParam(value = "page", defaultValue = "1") int page,
-                                  @RequestParam(value = "size", defaultValue = "15") int pageSize,
+                                  @RequestParam(value = "size", defaultValue = "10") int pageSize,
                                   Model model) {
         PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
         Page<WalletDTO> result = walletService.getAll(pageRequest);

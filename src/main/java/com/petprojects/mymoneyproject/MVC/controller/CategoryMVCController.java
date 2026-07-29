@@ -6,6 +6,8 @@ import com.petprojects.mymoneyproject.DTO.WalletDTO;
 import com.petprojects.mymoneyproject.service.CategoryService;
 import com.petprojects.mymoneyproject.service.userdetails.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Hidden;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,5 +39,31 @@ public class CategoryMVCController {
 
         categoryService.editCategory(categoryDTO, authentication);
         return "redirect:/";
+    }
+
+    @GetMapping("/allCategories")
+    public String getAllCategories(@RequestParam(value = "page", defaultValue = "1") int page,
+                                   @RequestParam(value = "size", defaultValue = "10") int pageSize,
+                                   Model model) {
+        PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
+        Page<CategoryDTO> result = categoryService.getAllCategories(pageRequest);
+
+        model.addAttribute("categories", result);
+        return "category/allCategories";
+    }
+
+    @PostMapping("/editCategory/restore")
+    public String postRestoreByAdmin(@RequestParam("deleteId") Long id) {
+
+        categoryService.restore(id);
+        return "redirect:/category/allCategories";
+    }
+
+    @PostMapping("/editCategory/delete")
+    public String postDeleteCategoryByAdmin(@RequestParam("deleteId") Long id,
+                                 Authentication authentication) {
+
+        categoryService.delete(id, authentication);
+        return "redirect:/category/allCategories";
     }
 }

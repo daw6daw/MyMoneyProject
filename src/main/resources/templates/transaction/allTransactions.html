@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Транзакции пользователей</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container py-4" >
+        <h1>Транзакции всех пользователей</h1>
+    </div>
+    <table class="table  w-100">
+        <thead class="text-center align-middle">
+        <tr>
+            <th style="width: 50px;" scope="col">Id</th>
+            <th style="width: 130px;" scope="col">Дата создания</th>
+            <th style="width: 130px;" scope="col">Логин пользователя</th>
+            <th style="width: 130px;" scope="col">Тип операции</th>
+            <th style="width: 130px;" scope="col">Количество</th>
+            <th style="width: 130px;" scope="col">Описание</th>
+            <th style="width: 130px;" scope="col">Категория</th>
+            <th style="width: 130px;" scope="col">С какого кошелька</th>
+            <th style="width: 130px;" scope="col">На какой кошелёк</th>
+        </tr>
+        </thead>
+        <tbody class="text-center align-middle">
+        <tr th:each="transaction : ${transactions}">
+            <td style="width: 50px;" th:text="${transaction.getId()}"></td>
+            <td style="width: 130px;" th:text="${#temporals.format(transaction.createdWhen, 'dd.MM.yyyy HH:mm')}"></td>
+            <td style="width: 130px;">
+                <a class="user-link" th:href="'/user/allUsers/' + ${transaction.getUser().getId()}"
+                   th:text="${transaction.getUser().getLogin()}">Логин</a>
+            </td>
+            <td style="width: 130px;" th:text="${transaction.getType().getTransactionTypeTextDisplay()}"></td>
+            <td style="width: 130px;" th:text="${#numbers.formatDecimal(transaction.getAmount() / 100.0, 1, 2, 'POINT')}"></td>
+            <td style="width: 130px;" th:text="${transaction.getDescription()}"></td>
+            <td style="width: 130px;" th:text="${transaction.getCategory()?.getName()}"></td>
+            <td style="width: 130px;" th:text="${transaction.getFromWallet().getId()}"></td>
+            <td style="width: 130px;" th:text="${transaction.getToWallet().getId()}"></td>
+        </tr>
+        </tbody>
+
+    </table>
+    <div>
+        <nav aria-label="Pagination" th:if="${transactions.totalPages gt 0}">
+            <ul class="pagination justify-content-center font-weight-bold">
+                <!-- Кнопка Назад -->
+                <li class="page-item" th:classappend="${transactions.number eq 0} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/transaction/allTransactions?page={id}(id=${transactions.number lt 2 ? 1 : transactions.number})}"
+                       aria-label="Previous" title="Previous Page" data-toggle="tooltip">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+
+                <!-- Кнопки страниц (1, 2, 3...) -->
+                <li class="page-item" th:classappend="${i eq transactions.number + 1} ? 'active'"
+                    th:each="i : ${#numbers.sequence(1, transactions.totalPages, 1)}">
+                    <a class="page-link" th:href="@{/transaction/allTransactions?page={id}(id=${i})}" th:text="${i}"
+                       th:title="${'Page ' + i}" data-toggle="tooltip"></a>
+                </li>
+
+                <!-- Кнопка Вперед -->
+                <li class="page-item" th:classappend="${transactions.number eq transactions.totalPages - 1} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/transaction/allTransactions?page={id}(id=${transactions.number + 2})}"
+                       aria-label="Next" title="Next Page" data-toggle="tooltip">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+</div>
+</body>
+</html>

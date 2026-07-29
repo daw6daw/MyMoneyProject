@@ -55,11 +55,17 @@
             <th style="width: 130px;" scope="col">Название</th>
             <th style="width: 130px;" scope="col">Баланс</th>
             <th style="width: 130px;" scope="col"></th>
-            <th style="width: 130px;" scope="col"></th>
+            <th style="width: 130px;" scope="col">
+                <!-- Чистая GET-ссылка вместо формы -->
+                <a th:href="@{/transaction/transfer}" class="btn btn-primary w-100">
+                    Сделать перевод
+                </a>
+            </th>
+
         </tr>
         </thead>
         <tbody  class="text-center align-middle">
-        <tr  th:each="wallet : ${wallets}" th:if="${wallet.isDeleted == false}">
+        <tr  th:each="wallet : ${wallets}"  th:if="${wallet.name != 'Внешний мир' and !wallet.isDeleted() and wallet.isDeleted == false}">
             <td style="width: 130px;" th:text="${#temporals.format(wallet.createdWhen, 'dd.MM.yyyy HH:mm')}"></td>
             <td style="width: 130px;" th:text="${wallet.getName()}"></td>
             <td style="width: 130px;" th:text="${#numbers.formatDecimal(wallet.getBalance() / 100.0, 1, 2, 'POINT')}"></td>

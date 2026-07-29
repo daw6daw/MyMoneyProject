@@ -2,13 +2,11 @@ package com.petprojects.mymoneyproject.MVC.controller;
 
 import com.petprojects.mymoneyproject.DTO.CategoryDTO;
 import com.petprojects.mymoneyproject.DTO.WalletDTO;
-import com.petprojects.mymoneyproject.model.Category;
 import com.petprojects.mymoneyproject.service.CategoryService;
+import com.petprojects.mymoneyproject.service.TransactionService;
 import com.petprojects.mymoneyproject.service.WalletService;
 import com.petprojects.mymoneyproject.service.userdetails.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Hidden;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,11 +23,14 @@ public class MainMVCController {
 
     private final CategoryService categoryService;
     private final WalletService walletService;
+     private final TransactionService transactionService;
 
     public MainMVCController(CategoryService categoryService,
-                             WalletService walletService) {
+                             WalletService walletService,
+                             TransactionService transactionService) {
         this.categoryService = categoryService;
         this.walletService = walletService;
+        this.transactionService = transactionService;
     }
 
 //    @GetMapping("/")
@@ -54,6 +55,13 @@ public class MainMVCController {
     @GetMapping("/")
     public String index(Model model,
                         Authentication authentication) {
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        if (isAdmin) {
+            return "redirect:/user/allUsers"; // Админ возвращается к полному списку
+        }
+
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         //List<UserDTO> userDTOList = userService.getAll();
 
@@ -68,12 +76,32 @@ public class MainMVCController {
     }
 
     @PostMapping("/deleteCategory")
-    public String delete(@RequestParam("deleteId") Long id,
-                         Authentication authentication) {
+    public String deleteCategory(@RequestParam("deleteId") Long id,
+                                 Authentication authentication) {
 
         categoryService.delete(id, authentication);
         return "redirect:/";
     }
 
+    @PostMapping("/makeExpenseTransaction")
+    public String postMakeExpenseTransaction(@RequestParam("fromWalletId") Long selectedWalletId,
+                                             @RequestParam("amount") String amount,
+                                             @RequestParam("description") String description,
+                                             @RequestParam("categoryId") Long categoryID,
+                                         Authentication authentication) {
 
+        transactionService.makeExpenseTransaction(selectedWalletId, amount, description, categoryID, authentication);
+        return "redirect:/";
+    }
+
+    @PostMapping("/makeIncomeTransaction")
+    public String postMakeIncomeTransaction(@RequestParam("toWalletId") Long selectedWalletId,
+                                             @RequestParam("amount") String amount,
+                                             @RequestParam("description") String description,
+                                             @RequestParam("categoryId") Long categoryID,
+                                             Authentication authentication) {
+
+        transactionService.makeIncomeTransaction(selectedWalletId, amount, description, categoryID, authentication);
+        return "redirect:/";
+    }
 }

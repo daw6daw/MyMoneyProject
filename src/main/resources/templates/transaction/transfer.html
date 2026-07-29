@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Перевод</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container py-4">
+        <h1>Сделать перевод</h1>
+    </div>
+
+    <!-- ИСПРАВЛЕНО: Добавлен класс d-flex для отображения в один ряд -->
+    <!-- Ошибка появится только если fromWalletId будет равен toWalletId -->
+    <div th:if="${errorMessage}" class="alert alert-danger container my-2" style="max-width: 1200px;"
+         th:text="${errorMessage}"></div>
+    <div class="d-flex align-items-end gap-3 container my-4" style="max-width: 1200px;">
+
+        <!-- ПЕРВЫЙ КОШЕЛЕК -->
+        <div class="flex-grow-1">
+            <label class="form-label fw-medium small text-secondary">Кошелёк (Откуда)</label>
+            <select class="form-select" name="fromWallet"
+                    form="transactionForm" required>
+                <option th:each="wallet : ${wallets}"
+                        th:value="${wallet.id}"
+                        th:text="${wallet.getName()} + ' баланс: ' + ${#numbers.formatDecimal(wallet.getBalance() / 100.0, 1, 2, 'POINT')}"
+                        th:if="${wallet.name != 'Внешний мир' and !wallet.isDeleted()}">
+                </option>
+            </select>
+        </div>
+
+        <!-- СУММА -->
+        <div style="width: 150px;">
+            <label class="form-label fw-medium small text-secondary">Сумма</label>
+            <input type="text" class="form-control" name="amount"
+                   form="transactionForm" required>
+        </div>
+
+        <!-- ВТОРОЙ КОШЕЛЕК -->
+        <div class="flex-grow-1">
+            <label class="form-label fw-medium small text-secondary">Кошелёк (Куда)</label>
+            <select class="form-select" name="toWallet"
+                    form="transactionForm" required>
+                <option th:each="wallet : ${wallets}"
+                        th:value="${wallet.id}"
+                        th:text="${wallet.getName()} + ' баланс: ' + ${#numbers.formatDecimal(wallet.getBalance() / 100.0, 1, 2, 'POINT')}"
+                        th:if="${wallet.name != 'Внешний мир' and !wallet.isDeleted()}"></option>
+            </select>
+        </div>
+
+        <!-- ФОРМА И КНОПКА -->
+        <form th:action="@{/transaction/makeTransfer}" method="post"
+              id="transactionForm" class="d-inline">
+            <!-- Кнопка Добавить отправляет именно эту форму -->
+            <button type="submit" class="btn btn-primary">Добавить</button>
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

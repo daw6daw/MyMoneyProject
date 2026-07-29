@@ -29,7 +29,7 @@ public class Transaction extends GenericModel{
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = false, foreignKey = @ForeignKey(name = "FK_TRANSACTIONS_CATEGORY"))
+    @JoinColumn(name = "category_id", foreignKey = @ForeignKey(name = "FK_TRANSACTIONS_CATEGORY"))
     private Category category;
 
 

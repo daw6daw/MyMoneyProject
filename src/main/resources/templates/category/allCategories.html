@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Категории пользователей</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container py-4" >
+        <h1>Категории всех пользователей</h1>
+    </div>
+    <table class="table  w-100">
+        <thead class="text-center align-middle">
+        <tr>
+            <th style="width: 50px;" scope="col">Id</th>
+            <th style="width: 130px;" scope="col">Кем создан</th>
+            <th style="width: 130px;" scope="col">Дата создания</th>
+            <th style="width: 130px;" scope="col">Кем обновлён</th>
+            <th style="width: 130px;" scope="col">Дата обновления</th>
+            <th style="width: 130px;" scope="col">Удалён?</th>
+            <th style="width: 130px;" scope="col">Кем удалён</th>
+            <th style="width: 130px;" scope="col">Дата удаления</th>
+            <th style="width: 130px;" scope="col">Дата восстановления</th>
+            <th style="width: 130px;" scope="col">Логин пользователя</th>
+            <th style="width: 130px;" scope="col">Название</th>
+            <th style="width: 130px;" scope="col">Тип</th>
+            <th style="width: 130px;" scope="col"></th>
+        </tr>
+        </thead>
+        <tbody class="text-center align-middle">
+        <tr th:each="category : ${categories}">
+            <td style="width: 50px;" th:text="${category.getId()}"></td>
+            <td style="width: 130px;" th:text="${category.getCreatedBy()}"></td>
+            <td style="width: 130px;" th:text="${#temporals.format(category.createdWhen, 'dd.MM.yyyy HH:mm')}"></td>
+            <td style="width: 130px;" th:text="${category.getUpdatedBy()}"></td>
+            <td style="width: 130px;" th:text="${#temporals.format(category.updatedWhen, 'dd.MM.yyyy HH:mm')}"></td>
+            <td style="width: 130px;" class="text-center align-middle">
+                <span th:text="${category.deleted}" th:class="${category.deleted} ? 'badge bg-danger' : ''"></span>
+            </td>
+
+            <td style="width: 130px;" th:text="${category.getDeletedBy()}"></td>
+            <td style="width: 130px;" th:text="${#temporals.format(category.deletedWhen, 'dd.MM.yyyy HH:mm')}"></td>
+            <td style="width: 130px;" th:text="${#temporals.format(category.restoredWhen, 'dd.MM.yyyy HH:mm')}"></td>
+            <td style="width: 130px;">
+                <a class="user-link" th:href="'/user/allUsers/' + ${category.getUser().getId()}"
+                   th:text="${category.getUser().getLogin()}">Логин</a>
+            </td>
+            <td style="width: 130px;" th:text="${category.name}"></td>
+            <td style="width: 130px;" th:text="${category.type.getCategoryTypeTextDisplay()}"></td>
+
+            <td style="width: 130px;">
+                <a th:href="@{/category/editCategory/{editId}(editId=${category.id})}" class="btn btn-primary w-100">
+                    Изменить
+                </a>
+            </td>
+        </tr>
+        </tbody>
+
+    </table>
+    <div>
+        <nav aria-label="Pagination" th:if="${categories.totalPages gt 0}">
+            <ul class="pagination justify-content-center font-weight-bold">
+                <!-- Кнопка Назад -->
+                <li class="page-item" th:classappend="${categories.number eq 0} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/category/allCategories?page={id}(id=${categories.number lt 2 ? 1 : categories.number})}"
+                       aria-label="Previous" title="Previous Page" data-toggle="tooltip">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+
+                <!-- Кнопки страниц (1, 2, 3...) -->
+                <li class="page-item" th:classappend="${i eq categories.number + 1} ? 'active'"
+                    th:each="i : ${#numbers.sequence(1, categories.totalPages, 1)}">
+                    <a class="page-link" th:href="@{/category/allCategories?page={id}(id=${i})}" th:text="${i}"
+                       th:title="${'Page ' + i}" data-toggle="tooltip"></a>
+                </li>
+
+                <!-- Кнопка Вперед -->
+                <li class="page-item" th:classappend="${categories.number eq categories.totalPages - 1} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/category/allCategories?page={id}(id=${categories.number + 2})}"
+                       aria-label="Next" title="Next Page" data-toggle="tooltip">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+</div>
+</body>
+</html>

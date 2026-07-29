@@ -30,8 +30,14 @@ public class WebSecurityConfig {
             "/wallet/editWallet",
             "/wallet/editWallet/**",
             "/user/myProfile/edit",
-            "/category/editCategory/**");
-    private final List<String> ADMIN_PERMISSION_LIST = List.of("/user/**", "/wallet/**", "/user/allUsers/**");
+            "/category/editCategory/**",
+            "/transaction/history",
+            "/transaction/transfer");
+    private final List<String> ADMIN_PERMISSION_LIST = List.of("/user/**",
+            "/wallet/**",
+            "/user/allUsers/**",
+            "/transaction/allTransactions",
+            "/category/allCategories");
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 

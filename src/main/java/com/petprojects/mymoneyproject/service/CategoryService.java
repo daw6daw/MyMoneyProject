@@ -11,6 +11,9 @@ import com.petprojects.mymoneyproject.repository.CategoryRepository;
 import com.petprojects.mymoneyproject.repository.UserRepository;
 import com.petprojects.mymoneyproject.service.userdetails.CustomUserDetails;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -111,5 +114,20 @@ public class CategoryService extends GenericService<Category, CategoryDTO> {
         oldCategory.setUpdatedBy(currentUsername);
 
         repository.save(oldCategory);
+    }
+
+    public Page<CategoryDTO> getAllCategories(Pageable pageable){
+        Page<Category> categoryPaginated = repository.findAll(pageable);
+        List<CategoryDTO> categoryDTOList = mapper.toDTOs(categoryPaginated.getContent());
+        return new PageImpl<>(categoryDTOList, pageable, categoryPaginated.getTotalElements());
+    }
+
+    public void restore (Long id) {
+        Category category = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("category не найден с ID: " + id));
+
+        category.setDeleted(false);
+        category.setRestoredWhen(LocalDateTime.now());
+
+        repository.save(category);
     }
 }
