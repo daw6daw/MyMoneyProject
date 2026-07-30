@@ -23,17 +23,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class UserService extends GenericService <User, UserDTO> {
+public class UserService extends GenericService<User, UserDTO> {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final WalletRepository walletRepository;
 
 
-
-    public UserService (UserRepository userRepository,
-                        UserMapper userMapper,
-                        BCryptPasswordEncoder bCryptPasswordEncoder,
-                        WalletRepository walletRepository) {
+    public UserService(UserRepository userRepository,
+                       UserMapper userMapper,
+                       BCryptPasswordEncoder bCryptPasswordEncoder,
+                       WalletRepository walletRepository) {
         super(userRepository, userMapper);
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.walletRepository = walletRepository;
@@ -69,14 +68,14 @@ public class UserService extends GenericService <User, UserDTO> {
         return mapper.toDTO(((UserRepository) repository).findUserByEmail(email));
     }
 
-    public Page<UserDTO> getAll (Pageable pageable) {
+    public Page<UserDTO> getAll(Pageable pageable) {
         Page<User> usersPaginated = repository.findAll(pageable);
         List<UserDTO> result = mapper.toDTOs(usersPaginated.getContent());
         return new PageImpl<>(result, pageable, usersPaginated.getTotalElements());
     }
 
     public void editUser(UserDTO userDTO,
-                           Authentication authentication) {
+                         Authentication authentication) {
         User oldUser = repository.findById(userDTO.getId()).get();
         String currentUsername = authentication.getName();
         oldUser.setLastName(userDTO.getLastName());
@@ -91,8 +90,8 @@ public class UserService extends GenericService <User, UserDTO> {
         repository.save(oldUser);
     }
 
-    public void delete (Long id,
-                        Authentication authentication) {
+    public void delete(Long id,
+                       Authentication authentication) {
         String currentUsername = authentication.getName();
 
         User user = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("User не найден с ID: " + id));
@@ -103,13 +102,39 @@ public class UserService extends GenericService <User, UserDTO> {
         repository.save(user);
     }
 
-    public void restore (Long id) {
+    public void restore(Long id) {
 
         User user = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("User не найден с ID: " + id));
 
         user.setDeleted(false);
         user.setRestoredWhen(LocalDateTime.now());
 
+        repository.save(user);
+    }
+
+    public boolean checkPassword(String oldPassword,
+                                 Authentication authentication) {
+        String currentUsername = authentication.getName();
+        User user = mapper.toEntity(getUserByLogin(currentUsername));
+        return bCryptPasswordEncoder.matches(oldPassword, user.getPassword());
+    }
+
+    public void setNewPassword(String newPassword,
+                               Authentication authentication) {
+        String currentUsername = authentication.getName();
+        User user = mapper.toEntity(getUserByLogin(currentUsername));
+        user.setPassword(bCryptPasswordEncoder.encode(newPassword));
+        user.setUpdatedBy(currentUsername);
+        repository.save(user);
+    }
+
+    public void setNewPasswordByAdmin(String newPassword,
+                                      Long userId,
+                                      Authentication authentication) {
+        String currentUsername = authentication.getName();
+        User user = repository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User не найден с ID: " + userId));
+        user.setPassword(bCryptPasswordEncoder.encode(newPassword));
+        user.setUpdatedBy(currentUsername);
         repository.save(user);
     }
 }

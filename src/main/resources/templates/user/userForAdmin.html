@@ -14,8 +14,8 @@
 
         <h1 class="mb-4">Профиль пользователя</h1>
 
-        <form style="max-width: 500px;"  th:action="@{/user/allUsers/} + *{id}" method="post"
-              class="container py-4  align-items-end ">
+        <form style="max-width: 500px;" th:action="@{/user/allUsers/} + *{id}" method="post"
+              class="container mb-3  align-items-end ">
             <div class="col-12">
                 <label for="lastName" class="form-label">Фамилия</label>
                 <input th:field="*{lastName}" type="text" class="form-control" id="lastName"
@@ -109,14 +109,13 @@
             </div>
 
 
-
         </form>
 
         <form sec:authorize="isAuthenticated() && (hasRole('ADMIN'))"
-              th:if="*{!isDeleted}" style="max-width: 500px;"  th:action="@{/user/allUsers/delete}" method="post"
-              class="container py-4  align-items-end ">
+              th:if="*{!isDeleted}" style="max-width: 500px;" th:action="@{/user/allUsers/delete}" method="post"
+              class="container mb-2  align-items-end ">
             <!-- Кнопка запуска модального окна -->
-            <button type="button" class="btn btn-danger col-12 mt-4" data-bs-toggle="modal"
+            <button type="button" class="btn btn-danger col-12 mb-3" data-bs-toggle="modal"
                     data-bs-target="#staticBackdrop1">
                 Удалить
             </button>
@@ -145,10 +144,10 @@
         </form>
 
         <form sec:authorize="isAuthenticated() && (hasRole('ADMIN'))"
-              th:if="*{isDeleted}" style="max-width: 500px;"  th:action="@{/user/allUsers/restore}" method="post"
-              class="container py-4  align-items-end ">
+              th:if="*{isDeleted}" style="max-width: 500px;" th:action="@{/user/allUsers/restore}" method="post"
+              class="container mb-2  align-items-end ">
             <!-- Кнопка запуска модального окна -->
-            <button type="button" class="btn btn-primary col-12 mt-4" data-bs-toggle="modal"
+            <button type="button" class="btn btn-primary col-12 mb-3" data-bs-toggle="modal"
                     data-bs-target="#staticBackdrop2">
                 Восстановить
             </button>
@@ -161,7 +160,8 @@
                         <div class="modal-header">
                             <h1 class="modal-title fs-5" id="staticBackdropLabel2">Восстановление</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Закрыть"></button>
+                                    aria-label="Закрыть">
+                            </button>
                         </div>
                         <div class="modal-body">
                             Восстановить?
@@ -176,7 +176,21 @@
             </div>
         </form>
 
+        <div>
+            <form style="max-width: 500px;" th:action="@{/user/setNewPasswordByAdmin}" method="post"
+                  class="container mb-3 align-items-end ">
+                <!-- Чистая GET-ссылка вместо формы -->
+                <input type="hidden" th:value="*{id}" name="userId">
+                <div>
+                    <label for="email" class="form-label ">Новый пароль</label>
+                    <input type="password" name="newPassword" class="form-control" required>
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-primary col-12 mt-3">Изменить пароль</button>
+                </div>
+            </form>
 
+        </div>
 
     </div>
 </div>

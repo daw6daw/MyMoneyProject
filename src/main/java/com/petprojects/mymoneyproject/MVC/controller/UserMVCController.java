@@ -5,11 +5,14 @@ import com.petprojects.mymoneyproject.DTO.WalletDTO;
 import com.petprojects.mymoneyproject.service.UserService;
 import com.petprojects.mymoneyproject.service.userdetails.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Hidden;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -118,7 +121,6 @@ public class UserMVCController {
         userService.editUser(userDTO, authentication);
         return "redirect:/user/myProfile";
 
-        //todo сделать под админа управление аккаунтами, возможно добавить удаление акка и пользователю
     }
 
     @GetMapping("/allUsers/{Id}")
@@ -178,5 +180,59 @@ public class UserMVCController {
         return "redirect:/user/allUsers";
     }
 
-    //todo: начать работу над категориями
+
+    @GetMapping("/checkPassword")
+    public String getCheckPassword() {
+
+        return "user/checkPassword";
+    }
+
+    @PostMapping("/checkPassword")
+    public String postCheckPassword(@RequestParam String oldPassword,
+                                    Authentication authentication,
+                                    Model model) {
+
+        if (userService.checkPassword(oldPassword, authentication) == false) {
+            model.addAttribute("error", "Неверный пароль");
+            return "user/checkPassword";
+        } else {
+            return "/user/setNewPassword";
+        }
+    }
+
+    @PostMapping("/setNewPassword")
+    public String postSetNewPassword(@RequestParam("newPassword1") String newPassword1,
+                                     @RequestParam("newPassword2") String newPassword2,
+                                     Authentication authentication,
+                                     Model model) {
+
+        if (!newPassword1.equals(newPassword2)) {
+            model.addAttribute("errorSetNewPassword", "Разные пароли");
+            return "user/setNewPassword";
+        } else {
+            userService.setNewPassword(newPassword1, authentication);
+            return "redirect:/user/myProfile";
+        }
+    }
+
+    @PostMapping("/setNewPasswordByAdmin")
+    public String postSetNewPasswordByAdmin(@RequestParam("newPassword") String newPassword,
+                                            @RequestParam("userId") Long userId,
+                                            Authentication authentication) {
+
+        userService.setNewPasswordByAdmin(newPassword, userId, authentication);
+        return "redirect:/user/allUsers";
+    }
+
+    @PostMapping("/delete")
+    public String deleteByUser(@RequestParam("id") Long id,
+                               HttpServletRequest request,
+                               HttpServletResponse response,
+                                Authentication authentication) {
+
+        userService.delete(id, authentication);
+        SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+        logoutHandler.logout(request, response, authentication);
+        return "redirect:/";
+    }
 }

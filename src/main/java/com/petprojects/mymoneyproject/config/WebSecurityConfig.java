@@ -32,12 +32,16 @@ public class WebSecurityConfig {
             "/user/myProfile/edit",
             "/category/editCategory/**",
             "/transaction/history",
-            "/transaction/transfer");
+            "/transaction/transfer",
+            "/user/checkPassword",
+            "/user/setNewPassword",
+            "/user/delete");
     private final List<String> ADMIN_PERMISSION_LIST = List.of("/user/**",
             "/wallet/**",
             "/user/allUsers/**",
             "/transaction/allTransactions",
-            "/category/allCategories");
+            "/category/allCategories",
+            "/user/setNewPasswordByAdmin");
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 

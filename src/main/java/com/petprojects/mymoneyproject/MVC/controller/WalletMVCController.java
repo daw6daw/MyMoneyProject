@@ -83,7 +83,6 @@ public class WalletMVCController {
 
 
 
-    //TODO: сделать гет и пост маппинг для mywallets/editwallet, доделать editwallet.html, мб переименовать? хотя для пет сойдёт и так
 
     @GetMapping("/editWallet/{editId}")
     public String getEditWallet(@PathVariable("editId") Long id,

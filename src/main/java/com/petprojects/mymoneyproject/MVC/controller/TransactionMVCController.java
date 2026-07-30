@@ -59,7 +59,6 @@ public class TransactionMVCController {
         model.addAttribute("wallets", walletDTOList);
         return "transaction/transfer";
     }
-    //todo: тут что-то не так, надо сделать рабочим, доделать варианты update и delete для транзакций, по возможности, сделать для админа управление категориями и транзакциями
 
     @PostMapping("/makeTransfer")
     public String postMakeTransferTransaction(@RequestParam("fromWallet") Long fromWalletId,
