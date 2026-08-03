@@ -1,5 +1,6 @@
 package com.petprojects.mymoneyproject.MVC.controller;
 
+import com.petprojects.mymoneyproject.DTO.UserDTO;
 import com.petprojects.mymoneyproject.DTO.WalletDTO;
 import com.petprojects.mymoneyproject.service.WalletService;
 import com.petprojects.mymoneyproject.service.userdetails.CustomUserDetails;
@@ -108,6 +109,19 @@ public class WalletMVCController {
         } else {
             return "redirect:/wallet/myWallets";  // Обычный юзер возвращается к своим кошелькам
         }
+    }
+
+    @GetMapping("/search")
+    public String getWalletSearch(Model model) {
+        model.addAttribute("walletFormForSearch", new WalletDTO());
+        return "wallet/walletSearch";
+    }
+
+    @PostMapping("/search")
+    public String postWalletSearch(@ModelAttribute("walletFormForSearch") WalletDTO walletDTO,
+                                 Model model) {
+        model.addAttribute("wallets", walletService.findWallets(walletDTO)); // так понял, что users нужно для таблицы, где th:each="user : ${users}"
+        return "wallet/walletSearch";
     }
 
 }

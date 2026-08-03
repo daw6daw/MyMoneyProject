@@ -41,7 +41,8 @@ public class WebSecurityConfig {
             "/user/allUsers/**",
             "/transaction/allTransactions",
             "/category/allCategories",
-            "/user/setNewPasswordByAdmin");
+            "/user/setNewPasswordByAdmin",
+            "/**/search");
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 

@@ -8,9 +8,13 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="container py-4" >
-        <h1>Все пользователи</h1>
+    <div class="container py-4 d-flex justify-content-between align-items-center">
+        <h1 class="mb-0">Все пользователи</h1>
+        <a th:href="@{/user/search}" class="btn btn-primary w-50">
+            Поиск
+        </a>
     </div>
+
     <table class="table">
         <thead class="text-center align-middle">
         <tr>

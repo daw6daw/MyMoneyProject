@@ -28,6 +28,7 @@ public class UserService extends GenericService<User, UserDTO> {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final WalletRepository walletRepository;
 
+    private final UserRepository userRepository;
 
     public UserService(UserRepository userRepository,
                        UserMapper userMapper,
@@ -36,6 +37,7 @@ public class UserService extends GenericService<User, UserDTO> {
         super(userRepository, userMapper);
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.walletRepository = walletRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -137,4 +139,25 @@ public class UserService extends GenericService<User, UserDTO> {
         user.setUpdatedBy(currentUsername);
         repository.save(user);
     }
+
+    public List<UserDTO> findUsers(UserDTO userDTO) {
+        return mapper.toDTOs(userRepository.searchUsers(
+                userDTO.getId(),
+                userDTO.getEmail(),
+                userDTO.getLogin(),
+                userDTO.getLastName(),
+                userDTO.getFirstName(),
+                userDTO.getMiddleName(),
+                userDTO.getRole().getId(),
+                userDTO.isDeleted(),
+                userDTO.getNumber(),
+                userDTO.getCreatedWhen(),
+                userDTO.getUpdatedBy(),
+                userDTO.getUpdatedWhen(),
+                userDTO.getDeletedBy(),
+                userDTO.getDeletedWhen(),
+                userDTO.getRestoredWhen()
+        ));
+    }
+
 }

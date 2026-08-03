@@ -1,5 +1,6 @@
 package com.petprojects.mymoneyproject.service;
 
+import com.petprojects.mymoneyproject.DTO.UserDTO;
 import com.petprojects.mymoneyproject.DTO.WalletDTO;
 import com.petprojects.mymoneyproject.mapper.UserMapper;
 import com.petprojects.mymoneyproject.mapper.WalletMapper;
@@ -116,5 +117,21 @@ public class WalletService extends GenericService<Wallet, WalletDTO> {
         wallet.setRestoredWhen(LocalDateTime.now());
 
         repository.save(wallet);
+    }
+
+    public List<WalletDTO> findWallets(WalletDTO walletDTO) {
+        return mapper.toDTOs(walletRepository.findWallets(
+                walletDTO.getId(),
+                walletDTO.getCreatedBy(),
+                walletDTO.getCreatedWhen(),
+                walletDTO.getUpdatedBy(),
+                walletDTO.getUpdatedWhen(),
+                walletDTO.isDeleted(),
+                walletDTO.getDeletedBy(),
+                walletDTO.getDeletedWhen(),
+                walletDTO.getRestoredWhen(),
+//                walletDTO.getUser().getLogin(),
+                walletDTO.getName()
+        ));
     }
 }

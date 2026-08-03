@@ -235,4 +235,17 @@ public class UserMVCController {
         logoutHandler.logout(request, response, authentication);
         return "redirect:/";
     }
+
+    @GetMapping("/search")
+    public String getUserSearch(Model model) {
+        model.addAttribute("userFormForSearch", new UserDTO());
+        return "user/userSearch";
+    }
+
+    @PostMapping("/search")
+    public String postUserSearch(@ModelAttribute("userFormForSearch") UserDTO userDTO,
+                                 Model model) {
+        model.addAttribute("users", userService.findUsers(userDTO)); // так понял, что users нужно для таблицы, где th:each="user : ${users}"
+        return "user/userSearch";
+    }
 }
