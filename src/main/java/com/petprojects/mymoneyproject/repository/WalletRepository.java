@@ -16,8 +16,9 @@ public interface WalletRepository extends GenericRepository<Wallet>{
     Page<Wallet> findAllByUserId(Long userId, Pageable pageable);
     List<Wallet> findAllByUserId(Long userId);
 
-    @Query(value = "SELECT w.* FROM wallets w WHERE " +
-            "(:id IS NULL OR w.id = :id) AND " +
+    @Query(value = "SELECT w.* FROM wallets w " +
+            "LEFT JOIN users u ON w.user_id = u.id " + // Присоединяем таблицу пользователей
+            "WHERE (:id IS NULL OR w.id = :id) AND " +
             "(:name IS NULL OR :name = '' OR w.name ILIKE CONCAT('%', :name, '%')) AND " +
             "(:isDeleted IS NULL OR w.is_deleted = :isDeleted) AND " +
             "(:createdBy IS NULL OR :createdBy = '' OR w.created_by ILIKE CONCAT('%', :createdBy, '%')) AND " +
@@ -26,7 +27,8 @@ public interface WalletRepository extends GenericRepository<Wallet>{
             "(CAST(:updatedWhen AS text) IS NULL OR w.updated_when::date = CAST(:updatedWhen AS timestamp)::date) AND " +
             "(:deletedBy IS NULL OR :deletedBy = '' OR w.deleted_by ILIKE CONCAT('%', :deletedBy, '%')) AND " +
             "(CAST(:deletedWhen AS text) IS NULL OR w.deleted_when::date = CAST(:deletedWhen AS timestamp)::date) AND " +
-            "(CAST(:restoredWhen AS text) IS NULL OR w.restored_when::date = CAST(:restoredWhen AS timestamp)::date)",
+            "(CAST(:restoredWhen AS text) IS NULL OR w.restored_when::date = CAST(:restoredWhen AS timestamp)::date) AND " +
+            "(:userLogin IS NULL OR :userLogin = '' OR u.login = :userLogin)", // Ищем по логину, если он передан
             nativeQuery = true)
     List<Wallet> findWallets(
             @Param("id") Long id,
@@ -38,7 +40,8 @@ public interface WalletRepository extends GenericRepository<Wallet>{
             @Param("deletedBy") String deletedBy,
             @Param("deletedWhen") LocalDateTime deletedWhen,
             @Param("restoredWhen") LocalDateTime restoredWhen,
-            @Param("name") String name
+            @Param("name") String name,
+            @Param("userLogin") String userLogin // Заменили userId на userLogin
     );
 
 }

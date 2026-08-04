@@ -120,6 +120,9 @@ public class WalletService extends GenericService<Wallet, WalletDTO> {
     }
 
     public List<WalletDTO> findWallets(WalletDTO walletDTO) {
+        // Безопасно извлекаем логин, защищаясь от NullPointerException
+        String loginParam = (walletDTO.getUser() != null) ? walletDTO.getUser().getLogin() : null;
+
         return mapper.toDTOs(walletRepository.findWallets(
                 walletDTO.getId(),
                 walletDTO.getCreatedBy(),
@@ -130,8 +133,10 @@ public class WalletService extends GenericService<Wallet, WalletDTO> {
                 walletDTO.getDeletedBy(),
                 walletDTO.getDeletedWhen(),
                 walletDTO.getRestoredWhen(),
-//                walletDTO.getUser().getLogin(),
-                walletDTO.getName()
+                walletDTO.getName(),
+                loginParam // Передаем строку (или null), SQL сам во всем разберется
         ));
+        //todo: в таблицу добавить вывод принадлежности кошелька, а именно "кем создал" ссылкой на аккаунт, сделать для операций и категорий
     }
+
 }

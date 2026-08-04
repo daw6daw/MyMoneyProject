@@ -11,10 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -87,6 +84,19 @@ public class TransactionMVCController {
 
         model.addAttribute("transactions", result);
         return "transaction/allTransactions";
+    }
+
+    @GetMapping("/search")
+    public String getWalletSearch(Model model) {
+        model.addAttribute("transactionFormForSearch", new TransactionDTO());
+        return "transaction/transactionSearch";
+    }
+
+    @PostMapping("/search")
+    public String postWalletSearch(@ModelAttribute("transactionFormForSearch") TransactionDTO transactionDTO,
+                                   Model model) {
+        model.addAttribute("transactions", transactionService.findTransactions(transactionDTO));
+        return "transaction/transactionSearch";
     }
 
 }

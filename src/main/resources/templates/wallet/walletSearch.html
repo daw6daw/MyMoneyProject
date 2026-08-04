@@ -66,19 +66,10 @@
                 <label for="name" class="form-label">Название</label>
                 <input th:field="*{name}" type="text" class="form-control" id="name" placeholder="name">
             </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
+            <div class="col-2">
+                <label for="user" class="form-label">Логин владельца</label>
+                <input th:field="*{user.login}" type="text" class="form-control" id="user" placeholder="Введите логин">
+            </div>
 
             <!-- Кнопка отправки на всю ширину -->
             <div class="col-12 mt-4">
@@ -100,7 +91,7 @@
             <th style="width: 130px;" scope="col">Кем удалён</th>
             <th style="width: 130px;" scope="col">Дата удаления</th>
             <th style="width: 130px;" scope="col">Дата восстановления</th>
-<!--            <th style="width: 130px;" scope="col">Логин пользователя</th>-->
+            <th style="width: 130px;" scope="col">Логин пользователя</th>
             <th style="width: 130px;" scope="col">Название</th>
             <th style="width: 130px;" scope="col">Баланс</th>
         </tr>
@@ -119,10 +110,10 @@
             <td style="width: 130px;" th:text="${wallet.getDeletedBy()}"></td>
             <td style="width: 130px;" th:text="${#temporals.format(wallet.deletedWhen, 'dd.MM.yyyy HH:mm')}"></td>
             <td style="width: 130px;" th:text="${#temporals.format(wallet.restoredWhen, 'dd.MM.yyyy HH:mm')}"></td>
-<!--            <td style="width: 130px;">-->
-<!--                <a class="user-link" th:href="'/user/allUsers/' + ${wallet.getUser().getId()}"-->
-<!--                   th:text="${wallet.getUser().getLogin()}">Логин</a>-->
-<!--            </td>-->
+            <td style="width: 130px;">
+                <a class="user-link" th:href="'/user/allUsers/' + ${wallet.getUser().getId()}"
+                   th:text="${wallet.getUser().getLogin()}">Логин</a>
+            </td>
             <td style="width: 130px;" th:text="${wallet.getName()}"></td>
             <td style="width: 130px;" th:text="${#numbers.formatDecimal(wallet.getBalance() / 100.0, 1, 2, 'POINT')}"></td>
 

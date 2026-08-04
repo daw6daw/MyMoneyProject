@@ -157,9 +157,33 @@ public class TransactionService extends GenericService<Transaction, TransactionD
         walletRepository.save(toWallet);
     }
 
-    public Page<TransactionDTO> getAllTransactions(Pageable pageable){
+    public Page<TransactionDTO> getAllTransactions(Pageable pageable) {
         Page<Transaction> transactionsPaginated = repository.findAll(pageable);
         List<TransactionDTO> transactionDTOList = mapper.toDTOs(transactionsPaginated.getContent());
         return new PageImpl<>(transactionDTOList, pageable, transactionsPaginated.getTotalElements());
     }
+
+    public List<TransactionDTO> findTransactions(TransactionDTO transactionDTO) {
+        // Безопасно извлекаем логин, защищаясь от NullPointerException
+        String loginParam = (transactionDTO.getUser() != null) ? transactionDTO.getUser().getLogin() : null;
+        String typeParam = (transactionDTO.getType() != null) ? transactionDTO.getType().name() : null;
+        String categoryParam = (transactionDTO.getCategory() != null) ? transactionDTO.getCategory().getName() : null;
+
+        // 4. Безопасно извлекаем ID кошельков (если кошелька нет, пишем null)
+        Long fromWalletParam = (transactionDTO.getFromWallet() != null) ? transactionDTO.getFromWallet().getId() : null;
+        Long toWalletParam = (transactionDTO.getToWallet() != null) ? transactionDTO.getToWallet().getId() : null;
+
+
+        return mapper.toDTOs(transactionRepository.findTransactions(
+                transactionDTO.getId(),
+                transactionDTO.getCreatedWhen(),
+                loginParam,
+                typeParam,
+                categoryParam,
+                fromWalletParam,
+                toWalletParam
+
+        ));
+    }
+
 }

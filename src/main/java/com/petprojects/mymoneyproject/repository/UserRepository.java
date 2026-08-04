@@ -49,10 +49,4 @@ public interface UserRepository extends GenericRepository<User>{
             @Param("deletedWhen") java.time.LocalDateTime deletedWhen,
             @Param("restoredWhen") java.time.LocalDateTime restoredWhen
     );
-
-
-
-
-
-    //todo: сделать поиск по большему количеству полей
 }

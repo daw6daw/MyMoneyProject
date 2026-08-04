@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <meta charset="UTF-8">
+  <title>Поиск транзакции</title>
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="container py-4 d-flex justify-content-between align-items-center">
+    <h1 class="mb-0">Поиск транзакции</h1>
+
+  </div>
+  <div class="container py-4 d-flex justify-content-between align-items-center">
+    <form class="row g-3" method="POST" th:action="@{/transaction/search}" th:object="${transactionFormForSearch}">
+      <div class="col-2">
+        <label for="id" class="form-label">Id</label>
+        <input th:field="*{id}" type="text" class="form-control" id="id" placeholder="id">
+      </div>
+
+      <div class="col-md-2">
+        <label for="createdWhen" class="form-label">Дата регистрации</label>
+        <!-- type="date" автоматически включает встроенный календарь -->
+        <input th:field="*{createdWhen}" type="datetime-local" class="form-control" id="createdWhen">
+      </div>
+      <div class="col-2">
+        <label for="user" class="form-label">Логин владельца</label>
+        <input th:field="*{user.login}" type="text" class="form-control" id="user" placeholder="Логин">
+      </div>
+      <div class="col-2">
+        <label for="type" class="form-label">Тип операции</label>
+        <select th:field="*{type}" class="form-select" id="type">
+          <option value="">Все типы</option>
+          <option value="EXPENSE">Расход</option>
+          <option value="INCOME">Доход</option>
+          <option value="TRANSFER">Перевод</option>
+        </select>
+      </div>
+      <div class="col-2">
+        <label for="category" class="form-label">Категория</label>
+        <input th:field="*{category.name}" type="text" class="form-control" id="category" placeholder="Категория">
+      </div>
+      <div class="col-2">
+        <label for="fromWalletId" class="form-label">С какого кошелька</label>
+        <input th:field="*{fromWallet.id}" type="text" class="form-control" id="fromWalletId" placeholder="С какого кошелька">
+      </div>
+      <div class="col-2">
+        <label for="toWalletId" class="form-label">На какой кошелёк</label>
+        <input th:field="*{toWallet.id}" type="text" class="form-control" id="toWalletId" placeholder="На какой кошелёк">
+      </div>
+
+
+      <!-- Кнопка отправки на всю ширину -->
+      <div class="col-12 mt-4">
+        <button class="btn btn-primary w-100" type="submit">Поиск</button>
+      </div>
+
+    </form>
+  </div>
+
+  <table class="table">
+    <thead class="text-center align-middle">
+    <tr>
+      <th style="width: 50px;" scope="col">Id</th>
+      <th style="width: 130px;" scope="col">Дата создания</th>
+      <th style="width: 130px;" scope="col">Логин пользователя</th>
+      <th style="width: 130px;" scope="col">Тип операции</th>
+      <th style="width: 130px;" scope="col">Количество</th>
+      <th style="width: 130px;" scope="col">Описание</th>
+      <th style="width: 130px;" scope="col">Категория</th>
+      <th style="width: 130px;" scope="col">С какого кошелька</th>
+      <th style="width: 130px;" scope="col">На какой кошелёк</th>
+    </tr>
+    </thead>
+    <tbody class="text-center align-middle">
+    <tr th:each="transaction : ${transactions}">
+      <td style="width: 50px;" th:text="${transaction.getId()}"></td>
+      <td style="width: 130px;" th:text="${#temporals.format(transaction.createdWhen, 'dd.MM.yyyy HH:mm')}"></td>
+      <td style="width: 130px;">
+        <a class="user-link" th:href="'/user/allUsers/' + ${transaction.getUser().getId()}"
+           th:text="${transaction.getUser().getLogin()}">Логин</a>
+      </td>
+      <td style="width: 130px;" th:text="${transaction.getType().getTransactionTypeTextDisplay()}"></td>
+      <td style="width: 130px;" th:text="${#numbers.formatDecimal(transaction.getAmount() / 100.0, 1, 2, 'POINT')}"></td>
+      <td style="width: 130px;" th:text="${transaction.getDescription()}"></td>
+      <td style="width: 130px;" th:text="${transaction.getCategory()?.getName()}"></td>
+      <td style="width: 130px;" th:text="${transaction.getFromWallet().getId()}"></td>
+      <td style="width: 130px;" th:text="${transaction.getToWallet().getId()}"></td>
+    </tr>
+    </tbody>
+
+    <!--  </table>-->
+    <!--  <div>-->
+    <!--    <nav aria-label="Pagination" th:if="${users.totalPages gt 0}">-->
+    <!--      <ul class="pagination justify-content-center font-weight-bold">-->
+    <!--        &lt;!&ndash; Кнопка Назад &ndash;&gt;-->
+    <!--        <li class="page-item" th:classappend="${users.number eq 0} ? 'disabled'">-->
+    <!--          <a class="page-link"-->
+    <!--             th:href="@{/user/allUsers?page={id}(id=${users.number lt 2 ? 1 : users.number})}"-->
+    <!--             aria-label="Previous" title="Previous Page" data-toggle="tooltip">-->
+    <!--            <span aria-hidden="true">&laquo;</span>-->
+    <!--          </a>-->
+    <!--        </li>-->
+
+    <!--        &lt;!&ndash; Кнопки страниц (1, 2, 3...) &ndash;&gt;-->
+    <!--        <li class="page-item" th:classappend="${i eq users.number + 1} ? 'active'"-->
+    <!--            th:each="i : ${#numbers.sequence(1, users.totalPages, 1)}">-->
+    <!--          <a class="page-link" th:href="@{/user/allUsers?page={id}(id=${i})}" th:text="${i}"-->
+    <!--             th:title="${'Page ' + i}" data-toggle="tooltip"></a>-->
+    <!--        </li>-->
+
+    <!--        &lt;!&ndash; Кнопка Вперед &ndash;&gt;-->
+    <!--        <li class="page-item" th:classappend="${users.number eq users.totalPages - 1} ? 'disabled'">-->
+    <!--          <a class="page-link"-->
+    <!--             th:href="@{/user/allUsers?page={id}(id=${users.number + 2})}"-->
+    <!--             aria-label="Next" title="Next Page" data-toggle="tooltip">-->
+    <!--            <span aria-hidden="true">&raquo;</span>-->
+    <!--          </a>-->
+    <!--        </li>-->
+    <!--      </ul>-->
+    <!--    </nav>-->
+    <!--  </div>-->
+
+</div>
+</body>
+</html>

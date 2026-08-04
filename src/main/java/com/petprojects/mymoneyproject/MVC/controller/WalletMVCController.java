@@ -120,7 +120,7 @@ public class WalletMVCController {
     @PostMapping("/search")
     public String postWalletSearch(@ModelAttribute("walletFormForSearch") WalletDTO walletDTO,
                                  Model model) {
-        model.addAttribute("wallets", walletService.findWallets(walletDTO)); // так понял, что users нужно для таблицы, где th:each="user : ${users}"
+        model.addAttribute("wallets", walletService.findWallets(walletDTO));
         return "wallet/walletSearch";
     }
 
