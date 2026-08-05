@@ -14,7 +14,7 @@ public class MyMoneyProjectApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-    //todo: реализовать поиск с критериями
+
 
     }
 }

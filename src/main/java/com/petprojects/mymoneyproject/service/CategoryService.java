@@ -1,6 +1,7 @@
 package com.petprojects.mymoneyproject.service;
 
 import com.petprojects.mymoneyproject.DTO.CategoryDTO;
+import com.petprojects.mymoneyproject.DTO.TransactionDTO;
 import com.petprojects.mymoneyproject.DTO.WalletDTO;
 import com.petprojects.mymoneyproject.mapper.CategoryMapper;
 import com.petprojects.mymoneyproject.mapper.UserMapper;
@@ -129,5 +130,27 @@ public class CategoryService extends GenericService<Category, CategoryDTO> {
         category.setRestoredWhen(LocalDateTime.now());
 
         repository.save(category);
+    }
+
+    public List<CategoryDTO> findCategories(CategoryDTO categoryDTO) {
+        // Безопасно извлекаем логин, защищаясь от NullPointerException
+//        String loginParam = (categoryDTO.getUser() != null) ? categoryDTO.getUser().getLogin() : null;
+        String typeParam = (categoryDTO.getType() != null) ? categoryDTO.getType().name() : null;
+//        String categoryParam = (categoryDTO.getCategory() != null) ? categoryDTO.getCategory().getName() : null;
+//
+//        // 4. Безопасно извлекаем ID кошельков (если кошелька нет, пишем null)
+//        Long fromWalletParam = (categoryDTO.getFromWallet() != null) ? categoryDTO.getFromWallet().getId() : null;
+//        Long toWalletParam = (categoryDTO.getToWallet() != null) ? categoryDTO.getToWallet().getId() : null;
+
+
+        return mapper.toDTOs(categoryRepository.findCategories(
+                categoryDTO.getId(),
+                categoryDTO.getCreatedBy(),
+                categoryDTO.getCreatedWhen(),
+                categoryDTO.getName(),
+                typeParam,
+                categoryDTO.isDeleted()
+            //TODO: там, где есть в поиске поле удалено внести изменения на дополнительный чекбокс, чтобы был поиск по всем параметрам
+        ));
     }
 }

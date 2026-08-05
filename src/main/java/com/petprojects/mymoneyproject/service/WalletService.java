@@ -129,14 +129,13 @@ public class WalletService extends GenericService<Wallet, WalletDTO> {
                 walletDTO.getCreatedWhen(),
                 walletDTO.getUpdatedBy(),
                 walletDTO.getUpdatedWhen(),
-                walletDTO.isDeleted(),
+                walletDTO. isDeleted(),
                 walletDTO.getDeletedBy(),
                 walletDTO.getDeletedWhen(),
                 walletDTO.getRestoredWhen(),
                 walletDTO.getName(),
                 loginParam // Передаем строку (или null), SQL сам во всем разберется
         ));
-        //todo: в таблицу добавить вывод принадлежности кошелька, а именно "кем создал" ссылкой на аккаунт, сделать для операций и категорий
     }
 
 }

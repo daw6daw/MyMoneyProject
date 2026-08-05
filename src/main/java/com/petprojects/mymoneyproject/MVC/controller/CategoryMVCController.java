@@ -1,6 +1,7 @@
 package com.petprojects.mymoneyproject.MVC.controller;
 
 import com.petprojects.mymoneyproject.DTO.CategoryDTO;
+import com.petprojects.mymoneyproject.DTO.TransactionDTO;
 import com.petprojects.mymoneyproject.DTO.UserDTO;
 import com.petprojects.mymoneyproject.DTO.WalletDTO;
 import com.petprojects.mymoneyproject.service.CategoryService;
@@ -65,5 +66,18 @@ public class CategoryMVCController {
 
         categoryService.delete(id, authentication);
         return "redirect:/category/allCategories";
+    }
+
+    @GetMapping("/search")
+    public String getCategorySearch(Model model) {
+        model.addAttribute("categoryFormForSearch", new CategoryDTO());
+        return "category/categorySearch";
+    }
+
+    @PostMapping("/search")
+    public String postCategorySearch(@ModelAttribute("categoryFormForSearch") CategoryDTO categoryDTO,
+                                   Model model) {
+        model.addAttribute("categories", categoryService.findCategories(categoryDTO));
+        return "category/categorySearch";
     }
 }

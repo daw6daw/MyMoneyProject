@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Поиск категории</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container py-4 d-flex justify-content-between align-items-center">
+        <h1 class="mb-0">Поиск категории</h1>
+
+    </div>
+    <div class="container py-4 d-flex justify-content-between align-items-center">
+        <form class="row g-3" method="POST" th:action="@{/category/search}" th:object="${categoryFormForSearch}">
+            <div class="col-2">
+                <label for="id" class="form-label">Id</label>
+                <input th:field="*{id}" type="text" class="form-control" id="id" placeholder="id">
+            </div>
+            <div class="col-2">
+                <label for="created_by" class="form-label">Логин владельца</label>
+                <input th:field="*{createdBy}" type="text" class="form-control" id="created_by" placeholder="Логин">
+            </div>
+            <div class="col-md-2">
+                <label for="createdWhen" class="form-label">Дата регистрации</label>
+                <!-- type="date" автоматически включает встроенный календарь -->
+                <input th:field="*{createdWhen}" type="datetime-local" class="form-control" id="createdWhen">
+            </div>
+            <div class="col-2">
+                <label for="name" class="form-label">Название</label>
+                <input th:field="*{name}" type="text" class="form-control" id="name"
+                       placeholder="Название">
+            </div>
+            <div class="col-2">
+                <label for="type" class="form-label">Тип категории</label>
+                <select th:field="*{type}" class="form-select" id="type">
+                    <option value="">Все типы</option>
+                    <option value="EXPENSE">Расход</option>
+                    <option value="INCOME">Доход</option>
+                </select>
+            </div>
+            <div class="col-2">
+                <label for="isDeleted" class="form-label">Удалён?</label>
+                <select th:field="*{deleted}" class="form-select" id="isDeleted">
+
+                    <option value="true">Удалён</option>
+                    <option value="false">Не удалён</option>
+
+                </select>
+            </div>
+
+            <!--      <div class="col-2">-->
+            <!--        <label for="fromWalletId" class="form-label">С какого кошелька</label>-->
+            <!--        <input th:field="*{fromWallet.id}" type="text" class="form-control" id="fromWalletId" placeholder="С какого кошелька">-->
+            <!--      </div>-->
+            <!--      <div class="col-2">-->
+            <!--        <label for="toWalletId" class="form-label">На какой кошелёк</label>-->
+            <!--        <input th:field="*{toWallet.id}" type="text" class="form-control" id="toWalletId" placeholder="На какой кошелёк">-->
+            <!--      </div>-->
+
+
+            <!-- Кнопка отправки на всю ширину -->
+            <div class="col-12 mt-4">
+                <button class="btn btn-primary w-100" type="submit">Поиск</button>
+            </div>
+
+        </form>
+    </div>
+
+    <table class="table">
+        <thead class="text-center align-middle">
+        <tr>
+            <th style="width: 50px;" scope="col">Id</th>
+            <th style="width: 130px;" scope="col">Кем создан</th>
+            <th style="width: 130px;" scope="col">Дата создания</th>
+            <th style="width: 130px;" scope="col">Кем обновлён</th>
+            <th style="width: 130px;" scope="col">Дата обновления</th>
+            <th style="width: 130px;" scope="col">Удалён?</th>
+            <th style="width: 130px;" scope="col">Кем удалён</th>
+            <th style="width: 130px;" scope="col">Дата удаления</th>
+            <th style="width: 130px;" scope="col">Дата восстановления</th>
+            <th style="width: 130px;" scope="col">Логин пользователя</th>
+            <th style="width: 130px;" scope="col">Название</th>
+            <th style="width: 130px;" scope="col">Тип</th>
+            <th style="width: 130px;" scope="col"></th>
+        </tr>
+        </thead>
+        <tbody class="text-center align-middle">
+        <tr th:each="category : ${categories}">
+            <td style="width: 50px;" th:text="${category.getId()}"></td>
+            <td style="width: 130px;" th:text="${category.getCreatedBy()}"></td>
+            <td style="width: 130px;" th:text="${#temporals.format(category.createdWhen, 'dd.MM.yyyy HH:mm')}"></td>
+            <td style="width: 130px;" th:text="${category.getUpdatedBy()}"></td>
+            <td style="width: 130px;" th:text="${#temporals.format(category.updatedWhen, 'dd.MM.yyyy HH:mm')}"></td>
+            <td style="width: 130px;" class="text-center align-middle">
+                <span th:text="${category.deleted}" th:class="${category.deleted} ? 'badge bg-danger' : ''"></span>
+            </td>
+
+            <td style="width: 130px;" th:text="${category.getDeletedBy()}"></td>
+            <td style="width: 130px;" th:text="${#temporals.format(category.deletedWhen, 'dd.MM.yyyy HH:mm')}"></td>
+            <td style="width: 130px;" th:text="${#temporals.format(category.restoredWhen, 'dd.MM.yyyy HH:mm')}"></td>
+            <td style="width: 130px;">
+                <a class="user-link" th:href="'/user/allUsers/' + ${category.getUser().getId()}"
+                   th:text="${category.getUser().getLogin()}">Логин</a>
+            </td>
+            <td style="width: 130px;" th:text="${category.name}"></td>
+            <td style="width: 130px;" th:text="${category.type.getCategoryTypeTextDisplay()}"></td>
+
+            <td style="width: 130px;">
+                <a th:href="@{/category/editCategory/{editId}(editId=${category.id})}" class="btn btn-primary w-100">
+                    Изменить
+                </a>
+            </td>
+        </tr>
+        </tbody>
+
+        <!--  </table>-->
+        <!--  <div>-->
+        <!--    <nav aria-label="Pagination" th:if="${users.totalPages gt 0}">-->
+        <!--      <ul class="pagination justify-content-center font-weight-bold">-->
+        <!--        &lt;!&ndash; Кнопка Назад &ndash;&gt;-->
+        <!--        <li class="page-item" th:classappend="${users.number eq 0} ? 'disabled'">-->
+        <!--          <a class="page-link"-->
+        <!--             th:href="@{/user/allUsers?page={id}(id=${users.number lt 2 ? 1 : users.number})}"-->
+        <!--             aria-label="Previous" title="Previous Page" data-toggle="tooltip">-->
+        <!--            <span aria-hidden="true">&laquo;</span>-->
+        <!--          </a>-->
+        <!--        </li>-->
+
+        <!--        &lt;!&ndash; Кнопки страниц (1, 2, 3...) &ndash;&gt;-->
+        <!--        <li class="page-item" th:classappend="${i eq users.number + 1} ? 'active'"-->
+        <!--            th:each="i : ${#numbers.sequence(1, users.totalPages, 1)}">-->
+        <!--          <a class="page-link" th:href="@{/user/allUsers?page={id}(id=${i})}" th:text="${i}"-->
+        <!--             th:title="${'Page ' + i}" data-toggle="tooltip"></a>-->
+        <!--        </li>-->
+
+        <!--        &lt;!&ndash; Кнопка Вперед &ndash;&gt;-->
+        <!--        <li class="page-item" th:classappend="${users.number eq users.totalPages - 1} ? 'disabled'">-->
+        <!--          <a class="page-link"-->
+        <!--             th:href="@{/user/allUsers?page={id}(id=${users.number + 2})}"-->
+        <!--             aria-label="Next" title="Next Page" data-toggle="tooltip">-->
+        <!--            <span aria-hidden="true">&raquo;</span>-->
+        <!--          </a>-->
+        <!--        </li>-->
+        <!--      </ul>-->
+        <!--    </nav>-->
+        <!--  </div>-->
+
+</div>
+</body>
+</html>

@@ -42,11 +42,11 @@ public interface UserRepository extends GenericRepository<User>{
             @Param("role") Long role,
             @Param("isDeleted") boolean isDeleted,
             @Param("number") String number,
-            @Param("createdWhen") java.time.LocalDateTime createdWhen,
+            @Param("createdWhen") LocalDateTime createdWhen,
             @Param("updatedBy") String updatedBy,
-            @Param("updatedWhen") java.time.LocalDateTime updatedWhen,
+            @Param("updatedWhen") LocalDateTime updatedWhen,
             @Param("deletedBy") String deletedBy,
-            @Param("deletedWhen") java.time.LocalDateTime deletedWhen,
-            @Param("restoredWhen") java.time.LocalDateTime restoredWhen
+            @Param("deletedWhen") LocalDateTime deletedWhen,
+            @Param("restoredWhen") LocalDateTime restoredWhen
     );
 }
