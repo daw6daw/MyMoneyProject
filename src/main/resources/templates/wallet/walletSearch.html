@@ -38,15 +38,57 @@
                 <!-- type="date" автоматически включает встроенный календарь -->
                 <input th:field="*{updatedWhen}" type="datetime-local" class="form-control" id="updatedWhen">
             </div>
-            <div class="col-2">
-                <label for="isDeleted" class="form-label">Удалён?</label>
-                <select th:field="*{deleted}" class="form-select" id="isDeleted">
+            <div class="row g-3 align-items-center mb-3">
+                <!-- 1. Чекбокс "Искать везде" -->
+                <div class="col-auto">
+                    <div class="form-check">
+                        <!-- Проверяем параметр через рабочий ${param.searchAllDeleted} -->
+                        <input type="checkbox"
+                               id="searchAllDeleted"
+                               name="searchAllDeleted"
+                               value="true"
+                               th:checked="${param.searchAllDeleted != null && param.searchAllDeleted[0] == 'true'}"
+                               class="form-check-input"
+                               onchange="toggleSelectVisual(this.checked);" />
+                        <label class="form-check-label fw-medium" for="searchAllDeleted">
+                            Искать везде (True + False)
+                        </label>
+                    </div>
+                </div>
 
-                    <option value="true">Удалён</option>
-                    <option value="false">Не удалён</option>
-                </select>
-
+                <!-- 2. Выпадающий список -->
+                <div class="col-auto">
+                    <select id="isDeletedSelect"
+                            name="isDeletedParam"
+                            class="form-select"
+                            th:style="${param.searchAllDeleted != null && param.searchAllDeleted[0] == 'true'} ? 'pointer-events: none; background-color: #e9ecef; opacity: 0.7;' : ''">
+                        <!-- Проверяем выбранный пункт через ${param.isDeletedParam} -->
+                        <option value="false" th:selected="${param.isDeletedParam == null || param.isDeletedParam[0] == 'false'}">
+                            Только активные (False)
+                        </option>
+                        <option value="true" th:selected="${param.isDeletedParam != null && param.isDeletedParam[0] == 'true'}">
+                            Только удаленные (True)
+                        </option>
+                    </select>
+                </div>
             </div>
+
+            <!-- Маленький скрипт, который делает селект визуально заблокированным, но оставляет его кликабельным для формы -->
+            <script th:inline="javascript">
+                function toggleSelectVisual(isChecked) {
+                    const select = document.getElementById('isDeletedSelect');
+                    if (isChecked) {
+                        select.style.pointerEvents = 'none';
+                        select.style.backgroundColor = '#e9ecef';
+                        select.style.opacity = '0.7';
+                    } else {
+                        select.style.pointerEvents = 'auto';
+                        select.style.backgroundColor = '#fff';
+                        select.style.opacity = '1';
+                    }
+                }
+            </script>
+
             <div class="col-2">
                 <label for="deletedBy" class="form-label">Кем удалён</label>
                 <input th:field="*{deletedBy}" type="text" class="form-control" id="deletedBy" placeholder="Кем удалён">

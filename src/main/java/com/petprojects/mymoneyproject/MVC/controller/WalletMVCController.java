@@ -119,8 +119,18 @@ public class WalletMVCController {
 
     @PostMapping("/search")
     public String postWalletSearch(@ModelAttribute("walletFormForSearch") WalletDTO walletDTO,
-                                 Model model) {
-        model.addAttribute("wallets", walletService.findWallets(walletDTO));
+                                   @RequestParam(value = "searchAllDeleted", required = false) Boolean searchAllDeleted,
+                                   @RequestParam(value = "isDeletedParam", required = false) Boolean isDeletedParam,
+                                   Model model) {
+        // Если чекбокс нажат (true), то нам плевать на селект — передаем null в сервис
+        Boolean finalDeletedStatus = (searchAllDeleted != null && searchAllDeleted) ? null : isDeletedParam;
+
+        // Если и чекбокс не нажат, и из селекта ничего не пришло (дефолт) — ставим false
+        if (finalDeletedStatus == null && (searchAllDeleted == null || !searchAllDeleted)) {
+            finalDeletedStatus = false;
+        }
+
+        model.addAttribute("wallets", walletService.findWallets(walletDTO, finalDeletedStatus));
         return "wallet/walletSearch";
     }
 

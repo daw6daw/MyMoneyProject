@@ -35,6 +35,6 @@ public interface CategoryRepository extends GenericRepository<Category> {
             @Param("createdWhen") LocalDateTime createdWhen,
             @Param("name") String name,
             @Param("type") String type,
-            @Param("isDeleted") boolean isDeleted
+            @Param("isDeleted") Boolean isDeleted
     );
 }

@@ -40,7 +40,7 @@ public interface UserRepository extends GenericRepository<User>{
             @Param("firstName") String firstName,
             @Param("middleName") String middleName,
             @Param("role") Long role,
-            @Param("isDeleted") boolean isDeleted,
+            @Param("isDeleted") Boolean isDeleted,
             @Param("number") String number,
             @Param("createdWhen") LocalDateTime createdWhen,
             @Param("updatedBy") String updatedBy,
@@ -49,4 +49,5 @@ public interface UserRepository extends GenericRepository<User>{
             @Param("deletedWhen") LocalDateTime deletedWhen,
             @Param("restoredWhen") LocalDateTime restoredWhen
     );
+
 }

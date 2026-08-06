@@ -119,7 +119,8 @@ public class WalletService extends GenericService<Wallet, WalletDTO> {
         repository.save(wallet);
     }
 
-    public List<WalletDTO> findWallets(WalletDTO walletDTO) {
+    public List<WalletDTO> findWallets(WalletDTO walletDTO,
+                                       Boolean finalDeletedStatus) {
         // Безопасно извлекаем логин, защищаясь от NullPointerException
         String loginParam = (walletDTO.getUser() != null) ? walletDTO.getUser().getLogin() : null;
 
@@ -129,7 +130,7 @@ public class WalletService extends GenericService<Wallet, WalletDTO> {
                 walletDTO.getCreatedWhen(),
                 walletDTO.getUpdatedBy(),
                 walletDTO.getUpdatedWhen(),
-                walletDTO. isDeleted(),
+                finalDeletedStatus,
                 walletDTO.getDeletedBy(),
                 walletDTO.getDeletedWhen(),
                 walletDTO.getRestoredWhen(),

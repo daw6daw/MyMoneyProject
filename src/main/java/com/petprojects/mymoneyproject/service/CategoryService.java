@@ -132,15 +132,10 @@ public class CategoryService extends GenericService<Category, CategoryDTO> {
         repository.save(category);
     }
 
-    public List<CategoryDTO> findCategories(CategoryDTO categoryDTO) {
-        // Безопасно извлекаем логин, защищаясь от NullPointerException
-//        String loginParam = (categoryDTO.getUser() != null) ? categoryDTO.getUser().getLogin() : null;
+    public List<CategoryDTO> findCategories(CategoryDTO categoryDTO,
+                                            Boolean finalDeletedStatus) {
         String typeParam = (categoryDTO.getType() != null) ? categoryDTO.getType().name() : null;
-//        String categoryParam = (categoryDTO.getCategory() != null) ? categoryDTO.getCategory().getName() : null;
-//
-//        // 4. Безопасно извлекаем ID кошельков (если кошелька нет, пишем null)
-//        Long fromWalletParam = (categoryDTO.getFromWallet() != null) ? categoryDTO.getFromWallet().getId() : null;
-//        Long toWalletParam = (categoryDTO.getToWallet() != null) ? categoryDTO.getToWallet().getId() : null;
+
 
 
         return mapper.toDTOs(categoryRepository.findCategories(
@@ -149,8 +144,8 @@ public class CategoryService extends GenericService<Category, CategoryDTO> {
                 categoryDTO.getCreatedWhen(),
                 categoryDTO.getName(),
                 typeParam,
-                categoryDTO.isDeleted()
-            //TODO: там, где есть в поиске поле удалено внести изменения на дополнительный чекбокс, чтобы был поиск по всем параметрам
+                finalDeletedStatus
+            //TODO: сделать админу возможность менять роль пользователям, подумать, что нужно из поиска реализовать для пользователя и нужно ли это для пет проекта?
         ));
     }
 }

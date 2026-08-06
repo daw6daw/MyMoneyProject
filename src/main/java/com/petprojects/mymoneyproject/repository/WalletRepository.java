@@ -36,7 +36,7 @@ public interface WalletRepository extends GenericRepository<Wallet>{
             @Param("createdWhen") LocalDateTime createdWhen,
             @Param("updatedBy") String updatedBy,
             @Param("updatedWhen") LocalDateTime updatedWhen,
-            @Param("isDeleted") boolean isDeleted,
+            @Param("isDeleted") Boolean isDeleted,
             @Param("deletedBy") String deletedBy,
             @Param("deletedWhen") LocalDateTime deletedWhen,
             @Param("restoredWhen") LocalDateTime restoredWhen,

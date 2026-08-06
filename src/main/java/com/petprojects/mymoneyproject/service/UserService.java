@@ -140,7 +140,7 @@ public class UserService extends GenericService<User, UserDTO> {
         repository.save(user);
     }
 
-    public List<UserDTO> findUsers(UserDTO userDTO) {
+    public List<UserDTO> findUsers(UserDTO userDTO, Boolean finalDeletedStatus) {
         return mapper.toDTOs(userRepository.searchUsers(
                 userDTO.getId(),
                 userDTO.getEmail(),
@@ -148,8 +148,8 @@ public class UserService extends GenericService<User, UserDTO> {
                 userDTO.getLastName(),
                 userDTO.getFirstName(),
                 userDTO.getMiddleName(),
-                userDTO.getRole().getId(),
-                userDTO.isDeleted(),
+                (userDTO.getRole() != null) ? userDTO.getRole().getId() : null,
+                finalDeletedStatus, // Просто пробрасываем его в репозиторий
                 userDTO.getNumber(),
                 userDTO.getCreatedWhen(),
                 userDTO.getUpdatedBy(),
@@ -159,5 +159,6 @@ public class UserService extends GenericService<User, UserDTO> {
                 userDTO.getRestoredWhen()
         ));
     }
+
 
 }

@@ -244,8 +244,20 @@ public class UserMVCController {
 
     @PostMapping("/search")
     public String postUserSearch(@ModelAttribute("userFormForSearch") UserDTO userDTO,
+                                 @RequestParam(value = "searchAllDeleted", required = false) Boolean searchAllDeleted,
+                                 @RequestParam(value = "isDeletedParam", required = false) Boolean isDeletedParam,
                                  Model model) {
-        model.addAttribute("users", userService.findUsers(userDTO)); // так понял, что users нужно для таблицы, где th:each="user : ${users}"
+
+        // Если чекбокс нажат (true), то нам плевать на селект — передаем null в сервис
+        Boolean finalDeletedStatus = (searchAllDeleted != null && searchAllDeleted) ? null : isDeletedParam;
+
+        // Если и чекбокс не нажат, и из селекта ничего не пришло (дефолт) — ставим false
+        if (finalDeletedStatus == null && (searchAllDeleted == null || !searchAllDeleted)) {
+            finalDeletedStatus = false;
+        }
+
+        model.addAttribute("users", userService.findUsers(userDTO, finalDeletedStatus));
         return "user/userSearch";
     }
+
 }
