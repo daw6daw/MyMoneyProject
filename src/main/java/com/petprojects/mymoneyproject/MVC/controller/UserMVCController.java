@@ -228,7 +228,7 @@ public class UserMVCController {
     public String deleteByUser(@RequestParam("id") Long id,
                                HttpServletRequest request,
                                HttpServletResponse response,
-                                Authentication authentication) {
+                               Authentication authentication) {
 
         userService.delete(id, authentication);
         SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
@@ -260,4 +260,10 @@ public class UserMVCController {
         return "user/userSearch";
     }
 
+    @PostMapping("/allUsers/changeRole")
+    public String postChangeRole(@RequestParam("id") Long id) {
+
+        userService.changeRole(id);
+        return "redirect:/user/allUsers";
+    }
 }

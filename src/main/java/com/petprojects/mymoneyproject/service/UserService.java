@@ -29,15 +29,18 @@ public class UserService extends GenericService<User, UserDTO> {
     private final WalletRepository walletRepository;
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     public UserService(UserRepository userRepository,
                        UserMapper userMapper,
                        BCryptPasswordEncoder bCryptPasswordEncoder,
-                       WalletRepository walletRepository) {
+                       WalletRepository walletRepository,
+                       RoleRepository roleRepository) {
         super(userRepository, userMapper);
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.walletRepository = walletRepository;
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
     @Override
@@ -160,5 +163,21 @@ public class UserService extends GenericService<User, UserDTO> {
         ));
     }
 
+    public void changeRole(Long id) {
+
+        User user = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("User не найден с ID: " + id));
+
+        String roleName = user.getRole().getRoleName();
+        Role role;
+        if (roleName.equals("USER")) {
+            role = roleRepository.getReferenceById(1L);
+        } else {
+            role = roleRepository.getReferenceById(2L);
+        }
+        user.setRole(role);
+        user.setUpdatedBy("admin");
+
+        repository.save(user);
+    }
 
 }

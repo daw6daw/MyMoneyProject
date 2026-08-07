@@ -145,7 +145,7 @@ public class CategoryService extends GenericService<Category, CategoryDTO> {
                 categoryDTO.getName(),
                 typeParam,
                 finalDeletedStatus
-            //TODO: сделать админу возможность менять роль пользователям, подумать, что нужно из поиска реализовать для пользователя и нужно ли это для пет проекта?
+            //TODO: сделать админу возможность менять роль пользователям
         ));
     }
 }

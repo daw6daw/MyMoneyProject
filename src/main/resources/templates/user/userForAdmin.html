@@ -10,9 +10,43 @@
 <div layout:fragment="content">
 
     <!-- Ограничиваем общую ширину формы и центрируем её с помощью mx-auto -->
-    <div class="container py-4" th:object="${allUsersId}">
+    <div th:object="${allUsersId}">
 
-        <h1 class="mb-4">Профиль пользователя</h1>
+
+        <div class="container py-4 d-flex justify-content-between align-items-center">
+            <h1 class="mb-0">Профиль пользователя</h1>
+            <form th:action="@{/user/allUsers/changeRole}" method="post">
+                <!-- Кнопка запуска модального окна -->
+                <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal"
+                        data-bs-target="#staticBackdrop11">
+                    Изменить роль
+                </button>
+
+                <!-- Модальное окно -->
+                <div class="modal fade" id="staticBackdrop11" data-bs-backdrop="static" data-bs-keyboard="false"
+                     tabindex="-1" aria-labelledby="staticBackdropLabel11" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="staticBackdropLabel11">Изменить роль</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Закрыть">
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                Изменить роль?
+                            </div>
+                            <input type="hidden" th:field="*{id}">
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                <button type="submit" class="btn btn-primary">Изменить</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
 
         <form style="max-width: 500px;" th:action="@{/user/allUsers/} + *{id}" method="post"
               class="container mb-3  align-items-end ">
